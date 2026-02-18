@@ -12,4 +12,34 @@ export abstract class TodoService {
   }) {
     console.log("Hallo");
   }
+
+  static async addTodo({
+    body,
+  }: {
+    body: (typeof TodoModel.PostTodoBody)["static"];
+  }) {
+    console.log("Hallo");
+  }
+
+  static async updateTodoById({
+    body,
+    params,
+  }: {
+    body: (typeof TodoModel.PatchTodoBody)["static"];
+    params: (typeof TodoModel.PatchTodoParams)["static"];
+  }) {
+    console.log("Hallo");
+  }
+
+  static async deleteAllTodos() {
+    console.log("Hallo");
+  }
+
+  static async deleteTodoById({
+    params,
+  }: {
+    params: (typeof TodoModel.DeleteTodoParams)["static"];
+  }) {
+    console.log("Hallo");
+  }
 }
