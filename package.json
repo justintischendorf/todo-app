@@ -10,6 +10,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "elysia": "^1.4.25"
+    "elysia": "^1.4.25",
+    "plantuml": "^0.0.2"
   }
 }
