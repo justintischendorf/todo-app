@@ -18,9 +18,8 @@
     "typescript": "^5"
   },
   "scripts": {
-    "rest": "bun run --watch app/rest/src/index.ts",
-    "worker": "bun run --watch app/services/worker/index.ts",
-    "dev": "bun run --parallel --watch rest worker"
+    "rest": "bun run app/rest/src/index.ts",
+    "worker": "bun run app/services/worker/index.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.0",

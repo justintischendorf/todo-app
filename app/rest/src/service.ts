@@ -19,16 +19,19 @@ export abstract class TodoService {
   }: {
     params: (typeof TodoModel.GetTodoParams)["static"];
   }) {
-    let todo = undefined;
-    todo = await getMessageByIdFromCache(params.id);
-    if (todo === undefined) {
-      todo = await prisma.todo.findUnique({
-        where: {
-          id: params.id,
-        },
-      });
-      return todo;
+    const cached = await getMessageByIdFromCache(params.id);
+    if (cached) {
+      return JSON.parse(cached);
     }
+    const todo = await prisma.todo.findUnique({
+      where: {
+        id: params.id,
+      },
+    });
+    if (todo) {
+      await updateTodoByIdInCache(todo, params.id);
+    }
+    return todo;
   }
 
   static async addTodo({
@@ -36,7 +39,7 @@ export abstract class TodoService {
   }: {
     body: (typeof TodoModel.PostTodoBody)["static"];
   }) {
-    enqueueMessage({
+    await enqueueMessage({
       type: CLOUD_EVENT_TYPES.TODO_SENT,
       source: CLOUD_EVENT_SOURCE.TODO_SENT,
       data: body,
@@ -50,8 +53,8 @@ export abstract class TodoService {
     body: (typeof TodoModel.PatchTodoBody)["static"];
     params: (typeof TodoModel.PatchTodoParams)["static"];
   }) {
-    updateTodoByIdInCache(body, params.id);
-    prisma.todo.update({
+    await updateTodoByIdInCache(body, params.id);
+    await prisma.todo.update({
       where: {
         id: params.id,
       },

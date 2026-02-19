@@ -73,7 +73,8 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const TodoScalarFieldEnum = {
   id: 'id',
   title: 'title',
-  description: 'description'
+  description: 'description',
+  createdAt: 'createdAt'
 } as const
 
 export type TodoScalarFieldEnum = (typeof TodoScalarFieldEnum)[keyof typeof TodoScalarFieldEnum]

@@ -1,41 +1,33 @@
 import { CloudEvent } from "cloudevents";
 import Redis from "ioredis";
-import { prisma } from "../../../packages/database/prisma";
 import { z } from "zod";
+import { prisma } from "../../../packages/database/prisma";
+
+const redis = new Redis();
+
+const TodoSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+});
+
+console.log("👷 Worker gestartet");
 
 while (true) {
-  const redis = new Redis();
-
-  const TodoSchema = z.object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-  });
-
   try {
     const result = await redis.blpop("todo-inbox", 0);
-    if (result) {
-      const data = JSON.parse(result[1]);
-      const event = new CloudEvent(data);
-      if (event.data === undefined) {
-        throw new Error("Missing required data.");
-      } else {
-        const validation = TodoSchema.safeParse(event.data);
-        if (!validation.success) {
-          throw new Error("Ungültiges Event Format:" + validation.error);
-        }
-        const message = await prisma.todo.create({
-          data: {
-            id: validation.data.id,
-            title: validation.data.title,
-            description: validation.data.description,
-          },
-        });
-        //addTodoToCache(message);
-        console.log("Processing Event ID: " + event.id);
-      }
-    }
+    if (!result) continue;
+
+    const event = new CloudEvent(JSON.parse(result[1]));
+    if (!event.data) throw new Error("Missing event data");
+
+    const parsed = TodoSchema.parse(event.data);
+
+    await prisma.todo.create({
+      data: parsed,
+    });
+
+    console.log("✅ Event verarbeitet:", event.id);
   } catch (e) {
-    console.error("Error processing job: ", e);
+    console.error("❌ Worker Error:", e);
   }
 }

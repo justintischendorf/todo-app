@@ -8,7 +8,7 @@ interface Todo {
 }
 
 export async function getMessageByIdFromCache(id: string) {
-  await redis.get(id);
+  return await redis.get(id);
 }
 
 export async function deleteAllTodosFromCache() {

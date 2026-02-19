@@ -8,10 +8,10 @@ import {
 } from "@prisma/client/runtime/wasm-compiler-edge";
 import { TodoModel } from "./model";
 
-const api = new Elysia({ prefix: "/api" })
+new Elysia({ prefix: "/api" })
   .get("/todos", async ({ set }) => {
     try {
-      const todo = TodoService.getAllTodos();
+      const todo = await TodoService.getAllTodos();
       set.status = 200;
       return todo;
     } catch (e) {
@@ -36,10 +36,10 @@ const api = new Elysia({ prefix: "/api" })
   })
 
   .get(
-    "/todos:id",
+    "/todos/:id",
     async ({ set, params }) => {
       try {
-        const todo = TodoService.getTodoById({ params });
+        const todo = await TodoService.getTodoById({ params });
         set.status = 200;
         return todo;
       } catch (e) {
@@ -71,7 +71,7 @@ const api = new Elysia({ prefix: "/api" })
     "/todos",
     async ({ set, body }) => {
       try {
-        TodoService.addTodo({ body });
+        await TodoService.addTodo({ body });
         set.status = 202;
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
@@ -99,10 +99,10 @@ const api = new Elysia({ prefix: "/api" })
   )
 
   .patch(
-    "/todos:id",
+    "/todos/:id",
     async ({ set, body, params }) => {
       try {
-        TodoService.updateTodoById({ body, params });
+        await TodoService.updateTodoById({ body, params });
         set.status = 202;
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
@@ -132,7 +132,7 @@ const api = new Elysia({ prefix: "/api" })
 
   .delete("/todos", async ({ set }) => {
     try {
-      TodoService.deleteAllTodos();
+      await TodoService.deleteAllTodos();
       set.status = 200;
     } catch (e) {
       if (e instanceof PrismaClientInitializationError) {
@@ -156,10 +156,10 @@ const api = new Elysia({ prefix: "/api" })
   })
 
   .delete(
-    "/todos:id",
+    "/todos/:id",
     async ({ set, params }) => {
       try {
-        TodoService.deleteTodoById({ params });
+        await TodoService.deleteTodoById({ params });
         set.status = 200;
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
@@ -186,3 +186,5 @@ const api = new Elysia({ prefix: "/api" })
     },
   )
   .listen(3000);
+
+console.log(`🦊 Elysia läuft auf http://localhost:3000`);
