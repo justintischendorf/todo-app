@@ -36,3 +36,5 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 /app/generated/prisma
 
 /app/generated/prisma
+
+/app/generated/prisma

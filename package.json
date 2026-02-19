@@ -17,11 +17,21 @@
   "peerDependencies": {
     "typescript": "^5"
   },
+  "scripts": {
+    "rest": "bun run --watch app/rest/src/index.ts",
+    "worker": "bun run --watch app/services/worker/index.ts",
+    "dev": "bun run --parallel --watch rest worker"
+  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.0",
     "@prisma/client": "^7.4.0",
+    "cloudevents": "^10.0.0",
     "elysia": "^1.4.25",
+    "ioredis": "^5.9.3",
     "plantuml": "^0.0.2",
-    "prisma": "^7.4.0"
+    "prisma": "^7.4.0",
+    "uuid": "^13.0.0",
+    "uuidv4": "^6.2.13",
+    "zod": "^4.3.6"
   }
 }

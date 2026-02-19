@@ -1,8 +1,17 @@
+import { prisma } from "../../../packages/database/prisma";
+import { CLOUD_EVENT_SOURCE, CLOUD_EVENT_TYPES } from "../../../packages/utils";
+import {
+  deleteAllTodosFromCache,
+  deleteTodoByIdFromCache,
+  getMessageByIdFromCache,
+  updateTodoByIdInCache,
+} from "../../services/redis/cache";
+import { enqueueMessage } from "../../services/redis/queue";
 import type { TodoModel } from "./model";
 
 export abstract class TodoService {
   static async getAllTodos() {
-    console.log("Hallo");
+    return await prisma.todo.findMany();
   }
 
   static async getTodoById({
@@ -10,7 +19,16 @@ export abstract class TodoService {
   }: {
     params: (typeof TodoModel.GetTodoParams)["static"];
   }) {
-    console.log("Hallo");
+    let todo = undefined;
+    todo = await getMessageByIdFromCache(params.id);
+    if (todo === undefined) {
+      todo = await prisma.todo.findUnique({
+        where: {
+          id: params.id,
+        },
+      });
+      return todo;
+    }
   }
 
   static async addTodo({
@@ -18,7 +36,11 @@ export abstract class TodoService {
   }: {
     body: (typeof TodoModel.PostTodoBody)["static"];
   }) {
-    console.log("Hallo");
+    enqueueMessage({
+      type: CLOUD_EVENT_TYPES.TODO_SENT,
+      source: CLOUD_EVENT_SOURCE.TODO_SENT,
+      data: body,
+    });
   }
 
   static async updateTodoById({
@@ -28,11 +50,18 @@ export abstract class TodoService {
     body: (typeof TodoModel.PatchTodoBody)["static"];
     params: (typeof TodoModel.PatchTodoParams)["static"];
   }) {
-    console.log("Hallo");
+    updateTodoByIdInCache(body, params.id);
+    prisma.todo.update({
+      where: {
+        id: params.id,
+      },
+      data: body,
+    });
   }
 
   static async deleteAllTodos() {
-    console.log("Hallo");
+    await deleteAllTodosFromCache();
+    await prisma.todo.deleteMany();
   }
 
   static async deleteTodoById({
@@ -40,6 +69,11 @@ export abstract class TodoService {
   }: {
     params: (typeof TodoModel.DeleteTodoParams)["static"];
   }) {
-    console.log("Hallo");
+    await deleteTodoByIdFromCache(params.id);
+    await prisma.todo.delete({
+      where: {
+        id: params.id,
+      },
+    });
   }
 }
