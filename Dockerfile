@@ -1,17 +1,10 @@
 # Dockerfile
-FROM jarredsumner/bun:edge
-
+FROM oven/bun:1
 WORKDIR /app
-
-# Kopiere package.json & installiere deps
-COPY package.json ./
+COPY package.json /app
+COPY bun.lock /app
 RUN bun install
-
-# Kopiere restlichen Code
+COPY packages/database/prisma /app/prisma
+RUN bunx prisma generate
 COPY . .
-
-# Prisma Client generieren
-RUN bun prisma generate
-
-# Standard CMD (wird von docker-compose überschrieben)
-CMD ["bun", "run", "rest"]
+CMD ["bun", "apps/rest/src/index.ts"]
