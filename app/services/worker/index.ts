@@ -2,6 +2,7 @@ import { CloudEvent } from "cloudevents";
 import Redis from "ioredis";
 import { z } from "zod";
 import { prisma } from "../../../packages/database/prisma";
+import { updateTodoByIdInCache } from "../redis/cache";
 
 const redis = new Redis();
 
@@ -22,9 +23,10 @@ while (true) {
 
     const parsed = TodoSchema.parse(event.data);
 
-    await prisma.todo.create({
+    const created = await prisma.todo.create({
       data: parsed,
     });
+    updateTodoByIdInCache(created, created.id);
 
     console.log("✅ Event verarbeitet:", event.id);
   } catch (e) {

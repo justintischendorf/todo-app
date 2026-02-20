@@ -23,6 +23,7 @@ export abstract class TodoService {
     if (cached) {
       return JSON.parse(cached);
     }
+    
     const todo = await prisma.todo.findUnique({
       where: {
         id: params.id,
