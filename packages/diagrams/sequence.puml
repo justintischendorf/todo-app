@@ -1,96 +1,76 @@
 @startuml
-title Todo API – Unified Sequence Diagram (Read & Write Operations)
+autonumber
 actor Client
-participant "Angular Frontend" as FE
-participant "ElysiaJS API" as API
-participant "Redis Cache" as Redis
+participant "REST API" as API
+participant "Redis Cache" as Cache
 participant "Redis Queue" as Queue
-participant "Worker\n(Plain TS)" as Worker
-participant "PostgreSQL\n(Prisma)" as DB
-== READ OPERATIONS (Synchronous) ==
-group GET /todos (GetAll)
-   Client -> FE: Load Todos
-   FE -> API: GET /todos (JWT)
-   API -> API: Validate JWT
-   API -> Redis: GET todos:{userId}
-   alt Cache HIT
-       Redis --> API: Todos[]
-       API --> FE: 200 OK + Todos[]
-   else Cache MISS
-       Redis --> API: null
-       API -> DB: SELECT * FROM todos WHERE userId
-       DB --> API: Todos[]
-       API -> Redis: SET todos:{userId}
-       API --> FE: 200 OK + Todos[]
-   end
+participant "Worker (plainTS)" as Worker
+participant "Prisma ORM" as ORM
+database "PostgreSQL" as DB
+
+== GET /api/todos ==
+Client -> API: GET /api/todos
+API -> ORM: findMany(todos)
+ORM -> DB: SELECT * FROM todos
+DB --> ORM: todos
+ORM --> API: todos
+API --> Client: todos
+
+== GET /api/todos/:id ==
+Client -> API: GET /api/todos/:id
+API -> Cache: GET todo:id
+
+alt Todo im Cache vorhanden
+    Cache --> API: todo
+    API --> Client: todo
+else Todo nicht im Cache
+    Cache --> API: null
+    API -> ORM: findUnique(todo:id)
+    ORM -> DB: SELECT todo WHERE id
+    DB --> ORM: todo
+    ORM --> API: todo
+    API -> Cache: SET todo:id
+    API --> Client: todo
 end
-group GET /todos/:id (GetOne)
-   Client -> FE: Load Todo
-   FE -> API: GET /todos/{id} (JWT)
-   API -> API: Validate JWT
-   API -> Redis: GET todos:{userId}
-   alt Cache HIT
-       Redis --> API: Todos[]
-       API -> API: Filter todo by id
-       API --> FE: 200 OK + Todo
-   else Cache MISS
-       Redis --> API: null
-       API -> DB: SELECT todo WHERE id AND userId
-       DB --> API: Todo
-       API --> FE: 200 OK + Todo
-   end
+
+== POST /api/todos ==
+Client -> API: POST /api/todos (todo)
+API -> Queue: PUSH todo
+
+loop Worker verarbeitet Queue
+    Worker -> Queue: POP todo
+    Worker -> ORM: create(todo)
+    ORM -> DB: INSERT todo
+    DB --> ORM: success
+    ORM --> Worker: todo
+    Worker -> Cache: SET todo:id
 end
-== WRITE OPERATIONS (Asynchronous) ==
-group POST /todos (Create)
-   Client -> FE: Create Todo
-   FE -> API: POST /todos (JWT + Payload)
-   API -> API: Validate JWT
-   API -> Queue: LPUSH todo_events\n{CREATE, userId, data}
-   API --> FE: 201 Created
-end
-group PATCH /todos/:id (Update)
-   Client -> FE: Update Todo
-   FE -> API: PATCH /todos/{id} (JWT + Payload)
-   API -> API: Validate JWT
-   API -> Queue: LPUSH todo_events\n{UPDATE, userId, id, data}
-   API --> FE: 204 No Content
-end
-group DELETE /todos/:id (DeleteOne)
-   Client -> FE: Delete Todo
-   FE -> API: DELETE /todos/{id} (JWT)
-   API -> API: Validate JWT
-   API -> Queue: LPUSH todo_events\n{DELETE_ONE, userId, id}
-   API --> FE: 204 No Content
-end
-group DELETE /todos (DeleteAll)
-   Client -> FE: Delete All Todos
-   FE -> API: DELETE /todos (JWT)
-   API -> API: Validate JWT
-   API -> Queue: LPUSH todo_events\n{DELETE_ALL, userId}
-   API --> FE: 204 No Content
-end
-== ASYNC WORKER PROCESSING ==
-group Worker Event Processing
-   Worker -> Queue: BRPOP todo_events
-   alt CREATE
-       Worker -> DB: INSERT todo
-       DB --> Worker: OK
-       Worker -> Redis: DEL todos:{userId}
-   else UPDATE
-       Worker -> DB: UPDATE todo
-       DB --> Worker: OK
-       Worker -> Redis: DEL todos:{userId}
-   else DELETE_ONE
-       Worker -> DB: DELETE todo WHERE id AND userId
-       DB --> Worker: OK
-       Worker -> Redis: DEL todos:{userId}
-   else DELETE_ALL
-       Worker -> DB: DELETE todos WHERE userId
-       DB --> Worker: OK
-       Worker -> Redis: DEL todos:{userId}
-   end
-end
-note over Worker,Redis
-Worker is only responsible for\nwrites and cache invalidation.\nReads are never handled by Worker.
-end note
+
+== PATCH /api/todos/:id ==
+Client -> API: PATCH /api/todos/:id (updated data)
+API -> Cache: UPDATE todo:id
+API -> ORM: update(todo:id)
+ORM -> DB: UPDATE todo
+DB --> ORM: success
+ORM --> API: updated todo
+API --> Client: updated todo
+
+== DELETE /api/todos ==
+Client -> API: DELETE /api/todos
+API -> Cache: DELETE all todos
+API -> ORM: deleteMany(todos)
+ORM -> DB: DELETE FROM todos
+DB --> ORM: success
+ORM --> API: success
+API --> Client: success
+
+== DELETE /api/todos/:id ==
+Client -> API: DELETE /api/todos/:id
+API -> Cache: DELETE todo:id
+API -> ORM: delete(todo:id)
+ORM -> DB: DELETE todo WHERE id
+DB --> ORM: success
+ORM --> API: success
+API --> Client: success
+
 @enduml
