@@ -1,4 +1,4 @@
 # simple-todo-app
 
 ## Sequenzdiagramm
-![Sequenzdiagramm](packages/diagrams/sequence.svg)
+![Sequenzdiagramm](packages/diagrams/sequence.png)
