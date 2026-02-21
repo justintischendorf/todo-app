@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Limelight&display=swap');
+
+h1 {
+  font-size: 8vh;
+  text-align: center;
+  font-family: 'Limelight', sans-serif;
+  position: relative;
+  padding-bottom: 3vh;
+  margin-bottom: 10vh;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  width: 80%;
+  height: 1px;
+  bottom: 0;
+  left: 10%;
+  background-color: black;
+}
+
+section {
+  background-color: rgb(217, 217, 217);
+  width: 80%;
+  border-radius: 5%;
+  padding: 5vh;
+  margin: auto;
+  box-shadow: 0 5px 30px black;
+}
+
+main {
+    padding: 15vh 0;
+}
