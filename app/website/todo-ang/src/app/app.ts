@@ -10,3 +10,6 @@ import { Homepage } from './components/homepage/homepage';
 export class App {
   protected readonly title = signal('todo-ang');
 }
+
+export class AppModule {
+}

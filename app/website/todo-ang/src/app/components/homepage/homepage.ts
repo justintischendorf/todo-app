@@ -8,5 +8,4 @@ import { Todo } from './todo/todo';
   styleUrl: './homepage.css',
 })
 export class Homepage {
-
 }

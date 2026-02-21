@@ -1,22 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght,XOPQ,XTRA,YOPQ,YTDE,YTFI,YTLC,YTUC@8..144,100..1000,96,468,79,-203,738,514,712&display=swap');
 
 div {
-    background-color: rgb(246, 246, 246);
-    margin: 5vh auto;
-    width: 80%;
-    box-shadow: 0 2px 10px black;
+  background-color: rgb(246, 246, 246);
+  margin: 5vh auto;
+  width: 80%;
+  box-shadow: 0 2px 10px black;
 }
 
 h1 {
-    margin: 0 7%;
-    font-family: "Roboto Flex", sans-serif;
-    padding: 3% 0 1% 0;
-    font-size: 3vh;
+  margin: 0 7%;
+  font-family: 'Roboto Flex', sans-serif;
+  padding: 3% 0 1% 0;
+  font-size: 3vh;
 }
 
-p {
-    margin: 0 7%;
-    font-family: "Roboto Flex", sans-serif;
-    font-size: 2vh;
-    padding-bottom: 3%;
+.description {
+  margin: 0 7%;
+  font-family: 'Roboto Flex', sans-serif;
+  font-size: 2vh;
+  padding-bottom: 3%;
+}
+
+.timestamp {
+  margin: 0 7%;
+  font-family: 'Roboto Flex', sans-serif;
+  font-size: 1.5vh;
+  padding-bottom: 2%;
+  color: grey;
+}
+
+button {
+    background-color: rgb(246, 246, 246);
+    padding: 0.5%;
+    color: red;
+    border-radius: 50%;
+    border: 1px solid black;
+    margin-left: 98%;
+    margin-top: -2%;
+    box-shadow: 0 2px 10px black;
+}
+
+button:hover {
+    background-color: red;
+    color: white;
+    transition: 200ms;
 }
