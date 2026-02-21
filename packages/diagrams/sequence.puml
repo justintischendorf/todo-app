@@ -1,6 +1,7 @@
 @startuml
-autonumber
-actor Client
+
+actor User
+participant "Angular Frontend" as FE
 participant "REST API" as API
 participant "Redis Cache" as Cache
 participant "Redis Queue" as Queue
@@ -9,35 +10,41 @@ participant "Prisma ORM" as ORM
 database "PostgreSQL" as DB
 
 == GET /api/todos ==
-Client -> API: GET /api/todos
+User -> FE: Open page / trigger action
+FE -> API: GET /api/todos
 API -> ORM: findMany(todos)
 ORM -> DB: SELECT * FROM todos
 DB --> ORM: todos
 ORM --> API: todos
-API --> Client: todos
+API --> FE: todos
+FE --> User: Render todo list
 
 == GET /api/todos/:id ==
-Client -> API: GET /api/todos/:id
+User -> FE: Select todo
+FE -> API: GET /api/todos/:id
 API -> Cache: GET todo:id
 
-alt Todo im Cache vorhanden
+alt Todo found in cache
     Cache --> API: todo
-    API --> Client: todo
-else Todo nicht im Cache
+    API --> FE: todo
+    FE --> User: Display todo
+else Todo not in cache
     Cache --> API: null
     API -> ORM: findUnique(todo:id)
     ORM -> DB: SELECT todo WHERE id
     DB --> ORM: todo
     ORM --> API: todo
     API -> Cache: SET todo:id
-    API --> Client: todo
+    API --> FE: todo
+    FE --> User: Display todo
 end
 
 == POST /api/todos ==
-Client -> API: POST /api/todos (todo)
+User -> FE: Create new todo
+FE -> API: POST /api/todos (todo)
 API -> Queue: PUSH todo
 
-loop Worker verarbeitet Queue
+loop Worker processes queue
     Worker -> Queue: POP todo
     Worker -> ORM: create(todo)
     ORM -> DB: INSERT todo
@@ -46,31 +53,42 @@ loop Worker verarbeitet Queue
     Worker -> Cache: SET todo:id
 end
 
+API --> FE: 202 Accepted
+FE --> User: Todo will appear after refresh
+
 == PATCH /api/todos/:id ==
-Client -> API: PATCH /api/todos/:id (updated data)
+User -> FE: Edit todo
+FE -> API: PATCH /api/todos/:id (updated data)
 API -> Cache: UPDATE todo:id
 API -> ORM: update(todo:id)
 ORM -> DB: UPDATE todo
 DB --> ORM: success
 ORM --> API: updated todo
-API --> Client: updated todo
+API --> FE: updated todo
+FE --> User: Render updated todo
 
 == DELETE /api/todos ==
-Client -> API: DELETE /api/todos
+User -> FE: Delete all todos
+FE -> API: DELETE /api/todos
 API -> Cache: DELETE all todos
 API -> ORM: deleteMany(todos)
 ORM -> DB: DELETE FROM todos
 DB --> ORM: success
 ORM --> API: success
-API --> Client: success
+API --> FE: success
+FE -> FE: Reload page
+FE --> User: Render empty todo list
 
 == DELETE /api/todos/:id ==
-Client -> API: DELETE /api/todos/:id
+User -> FE: Delete single todo
+FE -> API: DELETE /api/todos/:id
 API -> Cache: DELETE todo:id
 API -> ORM: delete(todo:id)
 ORM -> DB: DELETE todo WHERE id
 DB --> ORM: success
 ORM --> API: success
-API --> Client: success
+API --> FE: success
+FE -> FE: Reload page
+FE --> User: Render remaining todos
 
 @enduml
