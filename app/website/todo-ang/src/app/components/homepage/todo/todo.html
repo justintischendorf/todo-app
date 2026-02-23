@@ -3,13 +3,13 @@
   href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete"
 />
 
-<div>
-  <button><span class="material-symbols-outlined">delete</span></button>
-  <h1>Titel</h1>
-  <p class="timestamp">erstellt am 17.12.2025 17:09 Uhr</p>
-  <p class="description">
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat quisquam debitis, inventore
-    natus consectetur corporis qui quas impedit aspernatur architecto quo facere adipisci nemo
-    suscipit pariatur sit quidem. Porro, inventore!
-  </p>
-</div>
+@for (todo of todos; track $index) {
+  <div>
+    <button><span class="material-symbols-outlined">delete</span></button>
+    <h1>{{ todo.title }}</h1>
+    <p class="timestamp">{{ todo.createdAt }}</p>
+    <p class="description">
+      {{ todo.description }}
+    </p>
+  </div>
+}

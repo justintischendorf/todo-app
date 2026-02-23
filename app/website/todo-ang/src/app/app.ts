@@ -1,15 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { Homepage } from './components/homepage/homepage';
 
 @Component({
   selector: 'app-root',
   imports: [Homepage],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = signal('todo-ang');
-}
 
-export class AppModule {
+export class App{
 }
