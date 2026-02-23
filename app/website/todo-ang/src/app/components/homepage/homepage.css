@@ -55,17 +55,17 @@ h2 {
 }
 
 button {
-  padding: 1.8% 2%;
+  padding: 1.5% 2%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: red;
   background-color: rgb(246, 246, 246);
-  border-radius: 50%;
+  border-radius: 25%;
   box-shadow: 0 2px 10px black;
   border: 1px solid black;
   margin: 0 auto;
-  margin-top: 7vh;
+  margin-top: 5.5vh;
 }
 
 button:hover {
