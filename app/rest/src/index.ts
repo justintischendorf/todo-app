@@ -9,6 +9,17 @@ import {
 import { TodoModel } from "./model";
 
 new Elysia({ prefix: "/api" })
+  .onRequest(({ set }) => {
+    set.headers["Access-Control-Allow-Origin"] = "*";
+    set.headers["Access-Control-Allow-Methods"] = "GET,POST,PATCH,DELETE,OPTIONS";
+    set.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+  })
+  .options("/todos", ({ set }) => {
+    set.status = 204;
+  })
+  .options("/todos/:id", ({ set }) => {
+    set.status = 204;
+  })
   .get("/todos", async ({ set }) => {
     try {
       const todo = await TodoService.getAllTodos();

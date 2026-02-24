@@ -1,7 +1,15 @@
 <div>
-  <button><span class="material-symbols-outlined">delete</span></button>
+  <button id="close-button" (click)="deleteTodo(todo.id)">
+    <span class="material-symbols-outlined"> close </span>
+  </button>
+  <button id="edit-button"  (click)="changeTodo(todo.id, todo.title, todo.description)">
+    <span class="material-symbols-outlined"> edit </span>
+  </button>
   <h1>{{ todo.title }}</h1>
-  <p class="timestamp">{{ todo.createdAt }}</p>
+  <p class="timestamp">
+    erstellt am {{ todo.createdAt | date: 'longDate' : '' : 'de' }} um
+    {{ todo.createdAt | date: 'shortTime' : '' : 'de' }} Uhr
+  </p>
   <p class="description">
     {{ todo.description }}
   </p>

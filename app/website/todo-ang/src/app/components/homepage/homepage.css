@@ -41,7 +41,7 @@ form {
 
 input {
   width: 17vw;
-  padding: 1%;
+  padding: 0.75%;
   background-color: rgb(246, 246, 246);
   border: 1px solid black;
   font-size: 2vh;
@@ -55,7 +55,7 @@ h2 {
 }
 
 button {
-  padding: 1.5% 2%;
+  padding: 1% 1.5%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,4 +76,11 @@ button:hover {
 
 span {
   font-size: 4.5vh;
+}
+
+p {
+  text-align: center;
+  font-size: 2vh;
+  font-family: 'Roboto Flex', sans-serif;
+  margin: 10% 0;
 }

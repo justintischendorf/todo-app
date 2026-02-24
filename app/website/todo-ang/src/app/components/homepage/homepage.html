@@ -1,14 +1,32 @@
 <main>
-  <h1>Todo-App</h1>ƒ
+  <h1>Todo-App</h1>
   <section>
     <form>
-      <h2><b>neues Todo:</b></h2>
-      <input type="text" placeholder="Titel" />
-      <input style="margin: 0 2.5%" type="text" placeholder="Beschreibung" />
+      <h2><b>Neues Todo:</b></h2>
+      <input
+        #title
+        type="text"
+        placeholder="Titel"
+        (keydown.enter)="addTodo(title.value, description.value, title, description)"
+      />
+      <input
+        name="filterName"
+        #description
+        type="text"
+        placeholder="Beschreibung"
+        style="margin: 0 2.5%"
+        (keydown.enter)="addTodo(title.value, description.value, title, description)"
+      />
     </form>
-    <button><span class="material-symbols-outlined">delete</span></button>
-    @for (todo of todos(); track todo.id) {
-      <app-todo [todo]="todo"></app-todo>
+    <button type="button" (click)="deleteTodos()">
+      <span class="material-symbols-outlined">delete</span>
+    </button>
+    @if (todos() && todos().length === 0) {
+      <p>Keine Todos vorhanden.</p>
+    } @else if (todos()) {
+      @for (todo of todos(); track todo.id) {
+        <app-todo [todo]="todo" (todoDeleted)="refreshTodos()"></app-todo>
+      }
     }
   </section>
 </main>

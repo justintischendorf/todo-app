@@ -2,15 +2,20 @@
 
 div {
   background-color: rgb(246, 246, 246);
-  margin: 7vh auto;
+  margin: 6vh auto;
   width: 80%;
   box-shadow: 0 2px 10px black;
 }
 
 h1 {
-  margin: 0 7%;
+  margin: -3.5% 7% 0 7%;
   font-family: 'Roboto Flex Variable', sans-serif;
   font-size: 3vh;
+  font-weight: 200;
+}
+
+p {
+  font-weight: 400;
 }
 
 .description {
@@ -29,8 +34,8 @@ h1 {
   color: grey;
 }
 
-button {
-  margin-left: 52.5rem;
+#close-button {
+  margin-left: 98%;
   transform: translateY(-1rem);
   display: flex;
   align-items: center;
@@ -43,8 +48,29 @@ button {
   box-shadow: 0 2px 10px black;
 }
 
-button:hover {
+#close-button:hover {
   background-color: red;
   color: white;
+  transition: 200ms;
+}
+
+#edit-button {
+  margin-left: 98%;
+  margin-top: 0.5%;
+  transform: translateY(-1rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(246, 246, 246);
+  padding: 0.5%;
+  color: rgb(79, 79, 79);
+  border-radius: 50%;
+  border: 1px solid black;
+  box-shadow: 0 2px 10px black;
+}
+
+#edit-button:hover {
+  background-color: rgb(79, 79, 79);
+  color: rgb(246, 246, 246);
   transition: 200ms;
 }

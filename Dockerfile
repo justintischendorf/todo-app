@@ -7,4 +7,4 @@ RUN bun install
 COPY packages/database/prisma /app/prisma
 RUN bunx prisma generate
 COPY . .
-CMD ["bun", "apps/rest/src/index.ts"]
+CMD ["bun", "app/rest/src/index.ts"]
