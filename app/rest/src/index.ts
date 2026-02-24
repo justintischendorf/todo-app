@@ -8,7 +8,7 @@ import {
 } from "@prisma/client/runtime/wasm-compiler-edge";
 import { TodoModel } from "./model";
 
-new Elysia({ prefix: "/api" })
+const app = new Elysia({ prefix: "/api" })
   .onRequest(({ set }) => {
     set.headers["Access-Control-Allow-Origin"] = "*";
     set.headers["Access-Control-Allow-Methods"] = "GET,POST,PATCH,DELETE,OPTIONS";
@@ -81,6 +81,7 @@ new Elysia({ prefix: "/api" })
   .post(
     "/todos",
     async ({ set, body }) => {
+      console.log("Received POST request with body:", body);
       try {
         await TodoService.addTodo({ body });
         set.status = 202;
@@ -198,4 +199,4 @@ new Elysia({ prefix: "/api" })
   )
   .listen(3000);
 
-console.log(`🦊 Elysia läuft auf http://localhost:3000`);
+console.log(`🦊 Elysia läuft auf http://localhost:${app.server?.port}`);
