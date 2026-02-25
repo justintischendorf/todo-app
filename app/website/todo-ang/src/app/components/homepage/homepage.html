@@ -1,20 +1,20 @@
 <main>
   <h1>Todo-App</h1>
   <section>
+    <h2><b>Neues Todo hinzufügen:</b></h2>
     <form>
-      <h2><b>Neues Todo:</b></h2>
       <input
         #title
         type="text"
+        style="margin-right: 0.5%"
         placeholder="Titel"
         (keydown.enter)="addTodo(title.value, description.value, title, description)"
       />
       <input
-        name="filterName"
         #description
         type="text"
+        style="margin-left: 0.5%"
         placeholder="Beschreibung"
-        style="margin: 0 2.5%"
         (keydown.enter)="addTodo(title.value, description.value, title, description)"
       />
     </form>

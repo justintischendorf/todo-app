@@ -1,9 +1,9 @@
 <div>
+    <button id="edit-button"  (click)="changeTodo(todo.id, todo.title, todo.description)">
+    <span class="material-symbols-outlined"> edit </span>
+  </button>
   <button id="close-button" (click)="deleteTodo(todo.id)">
     <span class="material-symbols-outlined"> close </span>
-  </button>
-  <button id="edit-button"  (click)="changeTodo(todo.id, todo.title, todo.description)">
-    <span class="material-symbols-outlined"> edit </span>
   </button>
   <h1>{{ todo.title }}</h1>
   <p class="timestamp">

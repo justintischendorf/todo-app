@@ -1,76 +1,142 @@
 @import '@fontsource-variable/roboto-flex';
 
 div {
-  background-color: rgb(246, 246, 246);
-  margin: 6vh auto;
+  background: var(--bg-card);
+  margin: 5% auto;
   width: 80%;
-  box-shadow: 0 2px 10px black;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  position: relative;
+  padding-top: clamp(0.5rem, 2vw, 1.5rem);
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+
+div:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
 h1 {
-  margin: -3.5% 7% 0 7%;
+  margin: 1.5% 7%;
   font-family: 'Roboto Flex Variable', sans-serif;
-  font-size: 3vh;
-  font-weight: 200;
-}
-
-p {
-  font-weight: 400;
+  font-size: clamp(1.2rem, 3vh, 2.5rem);
+  font-weight: 300;
+  color: var(--text-primary);
 }
 
 .description {
   margin: 0 7%;
   font-family: 'Roboto Flex Variable', sans-serif;
-  font-size: 2vh;
-  padding-bottom: 3%;
+  font-size: clamp(0.9rem, 2vh, 1.8rem);
+  padding-bottom: 5%;
+  font-weight: 400;
+  color: var(--text-secondary);
 }
 
 .timestamp {
   margin: 0 7%;
   font-family: 'Roboto Flex Variable', sans-serif;
-  font-size: 1.5vh;
-  margin-top: 1vh;
+  font-size: clamp(0.7rem, 1.5vh, 1.3rem);
+  margin-top: 0.5%;
   padding-bottom: 2%;
-  color: grey;
+  color: var(--text-muted);
 }
 
 #close-button {
-  margin-left: 98%;
-  transform: translateY(-1rem);
+  position: absolute;
+  top: -1.5rem;
+  right: -1.5rem;
+  width: clamp(1.8rem, 5vw, 3rem);
+  height: clamp(1.8rem, 5vw, 3rem);
+  font-size: clamp(0.7rem, 2.5vw, 1.3rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(246, 246, 246);
-  padding: 0.5%;
-  color: red;
+  background-color: var(--bg-secondary);
+  color: var(--danger);
   border-radius: 50%;
-  border: 1px solid black;
-  box-shadow: 0 2px 10px black;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  padding: 0;
+  transition: all 250ms ease;
 }
 
 #close-button:hover {
-  background-color: red;
-  color: white;
-  transition: 200ms;
+  background-color: var(--danger-hover);
+  color: var(--text-primary);
+  border-color: var(--danger);
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+  transform: scale(1.1);
 }
 
 #edit-button {
-  margin-left: 98%;
-  margin-top: 0.5%;
-  transform: translateY(-1rem);
+  position: absolute;
+  top: 2rem;
+  right: -1.5rem;
+  width: clamp(1.8rem, 5vw, 3rem);
+  height: clamp(1.8rem, 5vw, 3rem);
+  font-size: clamp(0.7rem, 2.5vw, 1.3rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(246, 246, 246);
-  padding: 0.5%;
-  color: rgb(79, 79, 79);
+  background-color: var(--bg-secondary);
+  color: var(--accent);
   border-radius: 50%;
-  border: 1px solid black;
-  box-shadow: 0 2px 10px black;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  padding: 0;
+  transition: all 250ms ease;
 }
 
 #edit-button:hover {
-  background-color: rgb(79, 79, 79);
-  color: rgb(246, 246, 246);
-  transition: 200ms;
+  background-color: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  div {
+    width: 90%;
+  }
+
+  #close-button {
+    top: -1rem;
+    right: -1rem;
+  }
+
+  #edit-button {
+    top: 1.5rem;
+    right: -1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  div {
+    width: 95%;
+    margin: 8% auto;
+  }
+
+  h1 {
+    margin: 0 5%;
+  }
+
+  .description,
+  .timestamp {
+    margin: 0 5%;
+  }
+
+  #close-button {
+    top: -0.8rem;
+    right: -0.8rem;
+  }
+
+  #edit-button {
+    top: 1.3rem;
+    right: -0.8rem;
+  }
 }

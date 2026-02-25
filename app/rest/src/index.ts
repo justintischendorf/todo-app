@@ -11,7 +11,8 @@ import { TodoModel } from "./model";
 const app = new Elysia({ prefix: "/api" })
   .onRequest(({ set }) => {
     set.headers["Access-Control-Allow-Origin"] = "*";
-    set.headers["Access-Control-Allow-Methods"] = "GET,POST,PATCH,DELETE,OPTIONS";
+    set.headers["Access-Control-Allow-Methods"] =
+      "GET,POST,PATCH,DELETE,OPTIONS";
     set.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
   })
   .options("/todos", ({ set }) => {
@@ -45,38 +46,6 @@ const app = new Elysia({ prefix: "/api" })
       return { error: "The server encountered an unexpected exception." };
     }
   })
-
-  .get(
-    "/todos/:id",
-    async ({ set, params }) => {
-      try {
-        const todo = await TodoService.getTodoById({ params });
-        set.status = 200;
-        return todo;
-      } catch (e) {
-        if (e instanceof PrismaClientInitializationError) {
-          set.status = 503;
-          return { error: "Unable to establish database connection." };
-        }
-        if (
-          e instanceof PrismaClientUnknownRequestError ||
-          e instanceof PrismaClientRustPanicError
-        ) {
-          set.status = 500;
-          return { error: "The server encountered an unexpected exception." };
-        }
-        if (e instanceof PrismaClientKnownRequestError) {
-          set.status = 500;
-          return { error: e.code };
-        }
-        set.status = 500;
-        return { error: "The server encountered an unexpected exception." };
-      }
-    },
-    {
-      params: TodoModel.GetTodoParams,
-    },
-  )
 
   .post(
     "/todos",

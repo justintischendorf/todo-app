@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Todo, TodoModel } from './todo/todo';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
-import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-homepage',
@@ -31,22 +30,14 @@ export class Homepage implements OnInit {
   }
 
   refreshTodos() {
-    this.http
-      .get<TodoModel[]>('http://localhost:3000/api/todos', {
-      })
-      .pipe(
-        delay(10000)
-      )
-      .subscribe({
-        next: (data) => {
-          console.log('Todos erfolgreich geladen:', data);
-          this.todos.set(data || []);
-        },
-        error: (error) => {
-          console.error('Fehler beim Laden der Todos:', error);
-          this.showAlert('Fehler beim Laden der Todos. Ist der Server gestartet?');
-        },
-      });
+    this.http.get<TodoModel[]>('http://localhost:3000/api/todos', {}).subscribe({
+      next: (data) => {
+        this.todos.set(data || []);
+      },
+      error: (error) => {
+        console.error('Fehler beim Laden der Todos:', error);
+      },
+    });
   }
 
   addTodo(
@@ -55,24 +46,20 @@ export class Homepage implements OnInit {
     titleInput: HTMLInputElement,
     descriptionInput: HTMLInputElement,
   ) {
-    console.log('Adding todo with title:', title, 'and description:', description);
     if (title.trim() === '') {
       this.showAlert('Der Titel darf nicht leer sein!');
       return;
     }
-    console.log('Title is valid');
     if (description.trim() === '') {
       this.showAlert('Die Beschreibung darf nicht leer sein!');
       return;
     }
-    console.log('Description is valid');
     for (const todo of this.todos()) {
       if (todo.title === title) {
         this.showAlert('Ein Todo mit diesem Titel existiert bereits!');
         return;
       }
     }
-    console.log('Title is unique');
     this.http
       .post('http://localhost:3000/api/todos', {
         title: title,
