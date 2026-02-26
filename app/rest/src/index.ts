@@ -50,7 +50,6 @@ const app = new Elysia({ prefix: "/api" })
   .post(
     "/todos",
     async ({ set, body }) => {
-      console.log("Received POST request with body:", body);
       try {
         await TodoService.addTodo({ body });
         set.status = 202;

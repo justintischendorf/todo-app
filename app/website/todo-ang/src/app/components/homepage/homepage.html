@@ -8,24 +8,32 @@
         type="text"
         style="margin-right: 0.5%"
         placeholder="Titel"
-        (keydown.enter)="addTodo(title.value, description.value, title, description)"
+        (keydown.enter)="
+          homepageService.addTodo(title.value, description.value, title, description)
+        "
       />
       <input
         #description
         type="text"
         style="margin-left: 0.5%"
         placeholder="Beschreibung"
-        (keydown.enter)="addTodo(title.value, description.value, title, description)"
+        (keydown.enter)="
+          homepageService.addTodo(title.value, description.value, title, description)
+        "
       />
     </form>
-    <button type="button" (click)="deleteTodos()">
+    <button type="button" (click)="homepageService.deleteTodos()">
       <span class="material-symbols-outlined">delete</span>
     </button>
-    @if (todos() && todos().length === 0) {
+    @if (homepageService.todos() && homepageService.todos().length === 0) {
       <p>Keine Todos vorhanden.</p>
-    } @else if (todos()) {
-      @for (todo of todos(); track todo.id) {
-        <app-todo [todo]="todo" (todoDeleted)="refreshTodos()"></app-todo>
+    } @else if (homepageService.todos()) {
+      @for (todo of homepageService.todos(); track todo.id) {
+        <app-todo
+          [todo]="todo"
+          (todoDeleted)="homepageService.refreshTodos()"
+          (todoChanged)="homepageService.refreshTodos()"
+        ></app-todo>
       }
     }
   </section>

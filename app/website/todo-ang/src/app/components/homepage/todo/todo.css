@@ -99,6 +99,23 @@ h1 {
   transform: scale(1.1);
 }
 
+.description-input,
+.title-input {
+  display: none;
+  width: 86%;
+  margin: 0 7%;
+  padding: 0.5rem;
+  font-family: 'Roboto Flex Variable', sans-serif;
+  font-size: clamp(0.9rem, 2vh, 1.8rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  transition: all 250ms ease;
+}
+
 @media (max-width: 768px) {
   div {
     width: 90%;
