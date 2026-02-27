@@ -36,10 +36,15 @@ export class Todo {
         title: title,
         description: description,
       })
-      .subscribe(() => {
-        this.todo.title = title;
-        this.todo.description = description;
-        this.todoChanged.emit();
+      .subscribe({
+        next: () => {
+          this.todo.title = title;
+          this.todo.description = description;
+          this.todoChanged.emit();
+        },
+        error: (error) => {
+          alert(error.error?.error || error.message);
+        },
       });
   }
 

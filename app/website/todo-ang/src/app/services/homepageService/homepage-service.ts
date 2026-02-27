@@ -1,6 +1,5 @@
-import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
 import { TodoModel } from '../../components/homepage/todo/todo';
 
 @Injectable({
@@ -8,17 +7,8 @@ import { TodoModel } from '../../components/homepage/todo/todo';
 })
 export class HomepageService {
   todos = signal<TodoModel[]>([]);
-  private platformId = inject(PLATFORM_ID);
 
   constructor(private http: HttpClient) {}
-
-  private showAlert(message: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      alert(message);
-    } else {
-      console.warn(message);
-    }
-  }
 
   refreshTodos() {
     this.http.get<TodoModel[]>('http://localhost:3000/api/todos', {}).subscribe({
@@ -26,7 +16,7 @@ export class HomepageService {
         this.todos.set(data || []);
       },
       error: (error) => {
-        console.error('Fehler beim Laden der Todos:', error);
+          alert(error.error?.error || error.message);
       },
     });
   }
@@ -37,45 +27,37 @@ export class HomepageService {
     titleInput: HTMLInputElement,
     descriptionInput: HTMLInputElement,
   ) {
-    if (title.trim() === '') {
-      this.showAlert('Der Titel darf nicht leer sein!');
-      return;
-    }
-    if (description.trim() === '') {
-      this.showAlert('Die Beschreibung darf nicht leer sein!');
-      return;
-    }
-    for (const todo of this.todos()) {
-      if (todo.title === title) {
-        this.showAlert('Ein Todo mit diesem Titel existiert bereits!');
-        return;
-      }
-    }
     this.http
       .post('http://localhost:3000/api/todos', {
         title: title,
         description: description,
       })
-      .subscribe(() => {
-        this.refreshTodos();
-        titleInput.value = '';
-        descriptionInput.value = '';
+      .subscribe({
+        next: () => {
+          this.refreshTodos();
+          titleInput.value = '';
+          descriptionInput.value = '';
+        },
+        error: (error) => {
+          alert(error.error?.error || error.message);
+        },
       });
   }
 
   patchTodo(id: string, title: string, description: string) {
     this.http
       .patch(`http://localhost:3000/api/todos/${id}`, { title, description })
-      .subscribe(() => {
-        this.refreshTodos();
+      .subscribe({
+        next: () => {
+          this.refreshTodos();
+        },
+        error: (error) => {
+          alert(error.error?.error || error.message);
+        },
       });
   }
 
   deleteTodos() {
-    if (this.todos().length === 0) {
-      this.showAlert('Es gibt keine Todos zum Löschen!');
-      return;
-    }
     this.http.delete('http://localhost:3000/api/todos').subscribe(() => {
       this.refreshTodos();
     });

@@ -51,6 +51,10 @@ const app = new Elysia({ prefix: "/api" })
     "/todos",
     async ({ set, body }) => {
       try {
+        if (!body.title || !body.description) {
+          set.status = 400;
+          return { error: "Title and description are required." };
+        }
         await TodoService.addTodo({ body });
         set.status = 202;
       } catch (e) {
@@ -82,6 +86,10 @@ const app = new Elysia({ prefix: "/api" })
     "/todos/:id",
     async ({ set, body, params }) => {
       try {
+        if (!body.title || !body.description) {
+          set.status = 400;
+          return { error: "Title and description are required." };
+        }
         await TodoService.updateTodoById({ body, params });
         set.status = 202;
       } catch (e) {
