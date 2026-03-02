@@ -34,6 +34,60 @@ section {
 
 main {
   padding: 5% 0;
+  position: relative;
+  overflow: hidden;
+}
+
+h1,
+section,
+form,
+button,
+p,
+h2 {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Stars ────────────────────────────────────────── */
+
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(241, 245, 249, 0.9) 0%,
+    rgba(56, 189, 248, 0.4) 60%,
+    transparent 100%
+  );
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.6);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-50vh) translateX(20px) scale(1);
+  }
+  92% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-105vh) translateX(-10px) scale(0.5);
+    opacity: 0;
+  }
 }
 
 form {
@@ -54,7 +108,9 @@ input {
   font-size: clamp(0.9rem, 2vh, 1.5rem);
   font-family: 'Roboto Flex Variable', sans-serif;
   color: var(--text-primary);
-  transition: border-color 200ms, box-shadow 200ms;
+  transition:
+    border-color 200ms,
+    box-shadow 200ms;
 }
 
 input::placeholder {

@@ -7,7 +7,7 @@ import { HomepageService } from '../../services/homepageService/homepage-service
   standalone: true,
   imports: [Todo],
   templateUrl: './homepage.html',
-  styleUrls: ['./homepage.css'],
+  styleUrls: ['./homepage.css', 'stars.css'],
 })
 export class Homepage implements OnInit {
   homepageService = inject(HomepageService);
