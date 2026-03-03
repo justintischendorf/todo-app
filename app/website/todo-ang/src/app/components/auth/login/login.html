@@ -44,7 +44,7 @@
     <input #email type="email" name="email" placeholder="E-Mail" required />
     <label for="password">Password</label>
     <input #password type="password" name="password" placeholder="Passwort" required />
-    <button type="button" (click)="loginService.login(username.value, email.value, password.value)">
+    <button type="button" (click)="loginService.login(username.value, email.value, password.value, username, email, password)">
       Login
     </button>
     <a href="/register">Noch keinen Account?</a>

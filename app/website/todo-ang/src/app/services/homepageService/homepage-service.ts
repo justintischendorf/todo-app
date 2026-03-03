@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TodoModel } from '../../components/homepage/todo/todo';
+import { LoginService } from '../authService/login/login-service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,15 +9,19 @@ import { TodoModel } from '../../components/homepage/todo/todo';
 export class HomepageService {
   todos = signal<TodoModel[]>([]);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private loginService: LoginService) {}
 
   refreshTodos() {
-    this.http.get<TodoModel[]>('http://localhost:3000/api/todos', {}).subscribe({
+    const token = this.loginService.getToken();
+    const headers: any = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const options = Object.keys(headers).length ? { headers } : {};
+    this.http.get<TodoModel[]>('http://localhost:3000/api/todos', options).subscribe({
       next: (data) => {
         this.todos.set(data || []);
       },
       error: (error) => {
-          alert(error.error?.error || error.message);
+        alert(error.error?.error || error.message);
       },
     });
   }
@@ -27,11 +32,15 @@ export class HomepageService {
     titleInput: HTMLInputElement,
     descriptionInput: HTMLInputElement,
   ) {
+    const token = this.loginService.getToken();
+    const headers: any = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const options = Object.keys(headers).length ? { headers } : {};
     this.http
       .post('http://localhost:3000/api/todos', {
         title: title,
         description: description,
-      })
+      }, options)
       .subscribe({
         next: () => {
           this.refreshTodos();
@@ -45,8 +54,12 @@ export class HomepageService {
   }
 
   patchTodo(id: string, title: string, description: string) {
+    const token = this.loginService.getToken();
+    const headers: any = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const options = Object.keys(headers).length ? { headers } : {};
     this.http
-      .patch(`http://localhost:3000/api/todos/${id}`, { title, description })
+      .patch(`http://localhost:3000/api/todos/${id}`, { title, description }, options)
       .subscribe({
         next: () => {
           this.refreshTodos();
@@ -58,14 +71,28 @@ export class HomepageService {
   }
 
   deleteTodos() {
-    this.http.delete('http://localhost:3000/api/todos').subscribe(() => {
+    const token = this.loginService.getToken();
+    const headers: any = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const options = Object.keys(headers).length ? { headers } : {};
+    this.http.delete('http://localhost:3000/api/todos', options).subscribe(() => {
       this.refreshTodos();
     });
   }
 
   deleteTodo(id: string) {
-    this.http.delete(`http://localhost:3000/api/todos/${id}`).subscribe(() => {
+    const token = this.loginService.getToken();
+    const headers: any = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const options = Object.keys(headers).length ? { headers } : {};
+    this.http.delete(`http://localhost:3000/api/todos/${id}`, options).subscribe(() => {
       this.refreshTodos();
     });
+  }
+
+  logout(): void {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userId');
+    window.location.href = '/login';
   }
 }

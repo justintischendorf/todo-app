@@ -10,6 +10,9 @@ import { TodoModel, UserModel } from "./model";
 import { verifyPassword } from "../../auth/hashing";
 import { prisma } from "../../../packages/database/prisma";
 import { createJWT } from "../../auth/jwt";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 const app = new Elysia({ prefix: "/api" })
   .onRequest(({ set }) => {
@@ -37,10 +40,28 @@ const app = new Elysia({ prefix: "/api" })
   // ------------------------- TODOS ------------------ -------
 
   .get("/todos", async ({ set, headers }) => {
+    const auth = headers['authorization'];
+    if (!auth) {
+      set.status = 401;
+      return { error: "Authorization header missing" };
+    }
+    const token = auth.replace('Bearer ', '');
+    let userId;
     try {
-      //const todos = await TodoService.getAllTodos(userId);
+      const payload = jwt.verify(token, JWT_SECRET) as any;
+      userId = payload?.userId || payload?.sub || payload?.id;
+    } catch (e) {
+      set.status = 401;
+      return { error: "Invalid token: " + (e as any).message };
+    }
+    if (!userId) {
+      set.status = 401;
+      return { error: "UserId missing in token" };
+    }
+    try {
+      const todos = await TodoService.getAllTodos(userId);
       set.status = 200;
-      //return todos;
+      return todos;
     } catch (e) {
       if (e instanceof PrismaClientInitializationError) {
         set.status = 503;
@@ -65,12 +86,32 @@ const app = new Elysia({ prefix: "/api" })
   .post(
     "/todos",
     async ({ set, body, headers }) => {
+      const auth = headers['authorization'];
+      if (!auth) {
+        set.status = 401;
+        return { error: "Authorization header missing" };
+      }
+      const token = auth.replace('Bearer ', '');
+      let userId;
+      try {
+        const payload = jwt.verify(token, JWT_SECRET) as any;
+        userId = payload?.userId || payload?.sub || payload?.id;
+      } catch (e) {
+        set.status = 401;
+        return { error: "Invalid token: " + (e as any).message };
+      }
+      if (!userId) {
+        set.status = 401;
+        return { error: "UserId missing in token" };
+      }
       try {
         if (!body.title || !body.description) {
           set.status = 400;
           return { error: "Title and description are required." };
         }
-        //await TodoService.addTodo({ body, userId });
+        console.log('POST /todos - userId:', userId, 'body:', body);
+        await TodoService.addTodo({ body, userId });
+        console.log('TODO added successfully');
         set.status = 200;
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
@@ -86,10 +127,10 @@ const app = new Elysia({ prefix: "/api" })
         }
         if (e instanceof PrismaClientKnownRequestError) {
           set.status = 500;
-          return { error: e.code };
+          return { error: e.code + ": " + (e as any).meta?.cause };
         }
         set.status = 500;
-        return { error: "The server encountered an unexpected exception." };
+        return { error: (e as any).message || "The server encountered an unexpected exception." };
       }
     },
     {
@@ -100,12 +141,30 @@ const app = new Elysia({ prefix: "/api" })
   .patch(
     "/todos/:id",
     async ({ set, body, params, headers }) => {
+      const auth = headers['authorization'];
+      if (!auth) {
+        set.status = 401;
+        return { error: "Authorization header missing" };
+      }
+      const token = auth.replace('Bearer ', '');
+      let userId;
+      try {
+        const payload = jwt.verify(token, JWT_SECRET) as any;
+        userId = payload?.userId || payload?.sub || payload?.id;
+      } catch (e) {
+        set.status = 401;
+        return { error: "Invalid token: " + (e as any).message };
+      }
+      if (!userId) {
+        set.status = 401;
+        return { error: "UserId missing in token" };
+      }
       try {
         if (!body.title || !body.description) {
           set.status = 400;
           return { error: "Title and description are required." };
         }
-        //await TodoService.updateTodoById({ body, params, userId });
+        await TodoService.updateTodoById({ body, params, userId });
         set.status = 200;
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
@@ -134,8 +193,26 @@ const app = new Elysia({ prefix: "/api" })
   )
 
   .delete("/todos", async ({ set, headers }) => {
+    const auth = headers['authorization'];
+    if (!auth) {
+      set.status = 401;
+      return { error: "Authorization header missing" };
+    }
+    const token = auth.replace('Bearer ', '');
+    let userId;
     try {
-      //await TodoService.deleteAllTodos();
+      const payload = jwt.verify(token, JWT_SECRET) as any;
+      userId = payload?.userId || payload?.sub || payload?.id;
+    } catch (e) {
+      set.status = 401;
+      return { error: "Invalid token: " + (e as any).message };
+    }
+    if (!userId) {
+      set.status = 401;
+      return { error: "UserId missing in token" };
+    }
+    try {
+      await TodoService.deleteAllTodos(userId);
       set.status = 200;
     } catch (e) {
       if (e instanceof PrismaClientInitializationError) {
@@ -161,8 +238,26 @@ const app = new Elysia({ prefix: "/api" })
   .delete(
     "/todos/:id",
     async ({ set, params, headers }) => {
+      const auth = headers['authorization'];
+      if (!auth) {
+        set.status = 401;
+        return { error: "Authorization header missing" };
+      }
+      const token = auth.replace('Bearer ', '');
+      let userId;
       try {
-        //await TodoService.deleteTodoById({ params });
+        const payload = jwt.verify(token, JWT_SECRET) as any;
+        userId = payload?.userId || payload?.sub || payload?.id;
+      } catch (e) {
+        set.status = 401;
+        return { error: "Invalid token: " + (e as any).message };
+      }
+      if (!userId) {
+        set.status = 401;
+        return { error: "UserId missing in token" };
+      }
+      try {
+        await TodoService.deleteTodoById({ params, userId });
         set.status = 200;
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
@@ -242,7 +337,7 @@ const app = new Elysia({ prefix: "/api" })
 
         if (!user) {
           set.status = 401;
-          return { error: "Invalid credentials." };
+          return { error: "Nutzer ist nicht vorhanden." };
         }
 
         const isPasswordValid = await verifyPassword(
@@ -252,10 +347,10 @@ const app = new Elysia({ prefix: "/api" })
         if (isPasswordValid) {
           const token = await createJWT(user.id);
           set.status = 200;
-          return { token };
+          return { token: token, userId: user.id };
         } else {
           set.status = 401;
-          return { error: "Invalid credentials." };
+          return { error: "Passwort oder Nutzername ist falsch." };
         }
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
