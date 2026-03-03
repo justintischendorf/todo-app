@@ -1,6 +1,5 @@
 import { prisma } from "../../../packages/database/prisma";
-import { CLOUD_EVENT_SOURCE, CLOUD_EVENT_TYPES } from "../../../packages/utils";
-import type { TodoModel } from "./model";
+import type { TodoModel, UserModel } from "./model";
 
 export abstract class TodoService {
   static async getAllTodos() {
@@ -45,6 +44,18 @@ export abstract class TodoService {
       where: {
         id: params.id,
       },
+    });
+  }
+}
+
+export abstract class UserService {
+  static async createUser({
+    body,
+  }: {
+    body: (typeof UserModel.PostUserBody)["static"];
+  }) {
+    await prisma.user.create({
+      data: body,
     });
   }
 }

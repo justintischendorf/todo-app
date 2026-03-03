@@ -30,11 +30,11 @@ h1 {
   font-family: 'Limelight', sans-serif;
   color: var(--text-primary);
   letter-spacing: 0.05em;
-  font-size: clamp(2.5rem, 8vh, 4rem);
+  font-size: clamp(1.5rem, 5vh, 2.5rem);
   position: relative;
   margin-top: 0;
-  margin-bottom: clamp(2rem, 5vh, 3rem);
-  padding-bottom: 1rem;
+  margin-bottom: clamp(1.5rem, 3vh, 2rem);
+  padding-bottom: 0.5rem;
 }
 
 label {
@@ -99,6 +99,18 @@ button:hover {
 
 button:active {
   transform: translateY(0);
+}
+
+a {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--accent);
+  font-family: 'Roboto Flex Variable', sans-serif;
+  font-size: clamp(0.8rem, 1.5vh, 0.9rem);
+  text-decoration: none;
+  transition:
+    color 200ms,
+    text-shadow 200ms;
 }
 
 @media (max-width: 480px) {

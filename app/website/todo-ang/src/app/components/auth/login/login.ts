@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
   templateUrl: './login.html',
   styleUrls: ['./login.css', './stars.css'],
 })
-export class Login {
-  
-}
+export class Login {}

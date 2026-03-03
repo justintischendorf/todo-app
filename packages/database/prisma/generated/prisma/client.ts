@@ -44,3 +44,8 @@ export { Prisma }
  * 
  */
 export type Todo = Prisma.TodoModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel

@@ -1,0 +1,122 @@
+@import '@fontsource/limelight';
+@import '@fontsource-variable/roboto-flex';
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+  overflow-y: visible;
+}
+
+form {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  border: 1px solid var(--border);
+  padding: clamp(2rem, 5vh, 3.5rem) clamp(1.5rem, 4vw, 3rem);
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Limelight', sans-serif;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+  font-size: clamp(1.5rem, 5vh, 2.5rem);
+  position: relative;
+  margin-top: 0;
+  margin-bottom: clamp(1.5rem, 3vh, 2rem);
+  padding-bottom: 0.5rem;
+}
+
+label {
+  font-family: 'Roboto Flex Variable', sans-serif;
+  color: var(--text-secondary);
+  font-size: clamp(0.75rem, 1.5vh, 0.875rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+input {
+  width: 100%;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Roboto Flex Variable', sans-serif;
+  font-size: clamp(0.9rem, 2vh, 1.1rem);
+  color: var(--text-primary);
+  transition:
+    border-color 200ms,
+    box-shadow 200ms;
+  margin-bottom: 1.25rem;
+  padding: 0.65rem 0.85rem;
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+button {
+  margin-top: 0.5rem;
+  width: 100%;
+  background-color: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #0f172a;
+  font-family: 'Roboto Flex Variable', sans-serif;
+  font-size: clamp(0.9rem, 2vh, 1.1rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition:
+    background-color 200ms,
+    box-shadow 200ms,
+    transform 200ms;
+}
+
+button:hover {
+  background-color: var(--accent-hover);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+a {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--accent);
+  font-family: 'Roboto Flex Variable', sans-serif;
+  font-size: clamp(0.8rem, 1.5vh, 0.9rem);
+  text-decoration: none;
+  transition:
+    color 200ms,
+    text-shadow 200ms;
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 1.75rem 1.25rem;
+    border-radius: var(--radius-md);
+  }
+}

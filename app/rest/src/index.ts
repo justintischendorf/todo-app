@@ -1,12 +1,12 @@
 import { Elysia } from "elysia";
-import { TodoService } from "./service";
+import { TodoService, UserService } from "./service";
 import {
   PrismaClientInitializationError,
   PrismaClientKnownRequestError,
   PrismaClientRustPanicError,
   PrismaClientUnknownRequestError,
 } from "@prisma/client/runtime/wasm-compiler-edge";
-import { TodoModel } from "./model";
+import { TodoModel, UserModel } from "./model";
 
 const app = new Elysia({ prefix: "/api" })
   .onRequest(({ set }) => {
@@ -21,6 +21,9 @@ const app = new Elysia({ prefix: "/api" })
   .options("/todos/:id", ({ set }) => {
     set.status = 204;
   })
+
+  // ------------------------- TODOS ------------------ -------
+
   .get("/todos", async ({ set }) => {
     try {
       const todo = await TodoService.getAllTodos();
@@ -56,7 +59,7 @@ const app = new Elysia({ prefix: "/api" })
           return { error: "Title and description are required." };
         }
         await TodoService.addTodo({ body });
-        set.status = 202;
+        set.status = 200;
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
           set.status = 503;
@@ -91,7 +94,7 @@ const app = new Elysia({ prefix: "/api" })
           return { error: "Title and description are required." };
         }
         await TodoService.updateTodoById({ body, params });
-        set.status = 202;
+        set.status = 200;
       } catch (e) {
         if (e instanceof PrismaClientInitializationError) {
           set.status = 503;
@@ -171,6 +174,43 @@ const app = new Elysia({ prefix: "/api" })
     },
     {
       params: TodoModel.DeleteTodoParams,
+    },
+  )
+
+  // ------------------------- AUTH ------------------ -------
+
+  .post(
+    "/auth/register",
+    async ({ set, body }) => {
+      try {
+        if (!body.username || !body.email || !body.password) {
+          set.status = 400;
+          return { error: "Username, email, and password are required." };
+        }
+        await UserService.createUser({ body });
+        set.status = 200;
+      } catch (e) {
+        if (e instanceof PrismaClientInitializationError) {
+          set.status = 503;
+          return { error: "Unable to establish database connection." };
+        }
+        if (
+          e instanceof PrismaClientUnknownRequestError ||
+          e instanceof PrismaClientRustPanicError
+        ) {
+          set.status = 500;
+          return { error: "The server encountered an unexpected exception." };
+        }
+        if (e instanceof PrismaClientKnownRequestError) {
+          set.status = 500;
+          return { error: e.code };
+        }
+        set.status = 500;
+        return { error: "The server encountered an unexpected exception." };
+      }
+    },
+    {
+      body: UserModel.PostUserBody,
     },
   )
   .listen(3000);
