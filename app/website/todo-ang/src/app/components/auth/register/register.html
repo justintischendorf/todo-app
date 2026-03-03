@@ -39,12 +39,37 @@
   <form>
     <h1>Registrierung</h1>
     <label for="username">Username</label>
-    <input type="text" id="username" name="username" placeholder="Nutzername" required />
+    <input #username type="text" name="username" placeholder="Nutzername" required />
     <label for="email">E-Mail</label>
-    <input type="email" id="email" name="email" placeholder="E-Mail" required />
+    <input #email type="email" name="email" placeholder="E-Mail" required />
     <label for="password">Password</label>
-    <input type="password" id="password" name="password" placeholder="Passwort" required />
-    <button type="submit">Registrieren</button>
+    <input #password type="password" name="password" placeholder="Passwort" required />
+    <label for="confirmPassword">Password bestätigen</label>
+    <input
+      #confirmPassword
+      type="password"
+      id="confirmPassword"
+      name="confirmPassword"
+      placeholder="Passwort bestätigen"
+      required
+    />
+    <button
+      type="button"
+      (click)="
+        registrationService.registerUser(
+          username.value,
+          email.value,
+          password.value,
+          confirmPassword.value,
+          username,
+          email,
+          password,
+          confirmPassword
+        )
+      "
+    >
+      Registrieren
+    </button>
     <a href="/login">Account schon vorhanden?</a>
   </form>
 </main>

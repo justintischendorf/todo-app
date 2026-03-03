@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { LoginService } from '../../../services/authService/login/login-service';
 
 @Component({
   selector: 'app-login',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './login.html',
   styleUrls: ['./login.css', './stars.css'],
 })
-export class Login {}
+export class Login {
+  loginService = inject(LoginService);
+}

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { RegisterService } from '../../../services/authService/registration/register-service';
 
 @Component({
   selector: 'app-register',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './register.html',
   styleUrls: ['./register.css', './stars.css'],
 })
-export class Register {}
+export class Register {
+  registrationService = inject(RegisterService);
+}
