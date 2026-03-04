@@ -19,7 +19,7 @@
     "typescript": "^5"
   },
   "scripts": {
-    "rest": "bun run app/rest/src/index.ts",
+    "rest": "bun run --watch app/rest/src/index.ts",
     "website": "cd app/website/todo-ang && ng serve",
     "docker:dev": "docker compose -f docker-compose-dev.yml up -d",
     "db:show": "bun prisma studio",

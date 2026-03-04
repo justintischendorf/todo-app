@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, input, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
+import { LoginService } from '../../../services/authService/login/login-service';
 
 export interface TodoModel {
   id: string;
@@ -22,10 +23,17 @@ export class Todo {
   @Output() todoDeleted = new EventEmitter<void>();
   @Output() todoChanged = new EventEmitter<void>();
 
+  private loginService = inject(LoginService);
+
   constructor(private http: HttpClient) {}
 
+  private getAuthHeaders(): { headers: { Authorization: string } } | {} {
+    const token = this.loginService.getToken();
+    return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  }
+
   deleteTodo(id: string) {
-    this.http.delete(`http://localhost:3000/api/todos/${id}`).subscribe(() => {
+    this.http.delete(`http://localhost:3000/api/todos/${id}`, this.getAuthHeaders()).subscribe(() => {
       this.todoDeleted.emit();
     });
   }
@@ -35,7 +43,7 @@ export class Todo {
       .patch(`http://localhost:3000/api/todos/${id}`, {
         title: title,
         description: description,
-      })
+      }, this.getAuthHeaders())
       .subscribe({
         next: () => {
           this.todo.title = title;

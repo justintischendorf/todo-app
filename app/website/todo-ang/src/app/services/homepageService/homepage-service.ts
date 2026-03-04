@@ -9,7 +9,10 @@ import { LoginService } from '../authService/login/login-service';
 export class HomepageService {
   todos = signal<TodoModel[]>([]);
 
-  constructor(private http: HttpClient, private loginService: LoginService) {}
+  constructor(
+    private http: HttpClient,
+    private loginService: LoginService,
+  ) {}
 
   refreshTodos() {
     const token = this.loginService.getToken();
@@ -37,10 +40,14 @@ export class HomepageService {
     if (token) headers.Authorization = `Bearer ${token}`;
     const options = Object.keys(headers).length ? { headers } : {};
     this.http
-      .post('http://localhost:3000/api/todos', {
-        title: title,
-        description: description,
-      }, options)
+      .post(
+        'http://localhost:3000/api/todos',
+        {
+          title: title,
+          description: description,
+        },
+        options,
+      )
       .subscribe({
         next: () => {
           this.refreshTodos();
@@ -81,6 +88,7 @@ export class HomepageService {
   }
 
   deleteTodo(id: string) {
+    console.log('check');
     const token = this.loginService.getToken();
     const headers: any = {};
     if (token) headers.Authorization = `Bearer ${token}`;
@@ -91,8 +99,8 @@ export class HomepageService {
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userId');
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('userId');
     window.location.href = '/login';
   }
 }

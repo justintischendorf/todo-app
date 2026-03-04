@@ -27,10 +27,10 @@ export class LoginService {
           const token = res?.token;
           const userId = res?.userId;
           if (token) {
-            localStorage.setItem('authToken', token);
+            sessionStorage.setItem('authToken', token);
           }
           if (userId) {
-            localStorage.setItem('userId', String(userId));
+            sessionStorage.setItem('userId', String(userId));
           }
           this.router.navigate(['/home']);
         },
@@ -47,6 +47,6 @@ export class LoginService {
     if (typeof window === 'undefined') {
       return null;
     }
-    return localStorage.getItem('authToken');
+    return sessionStorage.getItem('authToken');
   }
 }

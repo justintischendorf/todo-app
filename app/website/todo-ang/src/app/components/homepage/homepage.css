@@ -24,15 +24,16 @@ h1::after {
 
 section {
   background: var(--bg-secondary);
-  width: min(80%, 1200px);
+  width: min(75%, 1000px);
   border-radius: var(--radius-lg);
-  padding: 2.5%;
+  padding: 2rem 2.5rem;
   margin: auto;
   box-shadow: var(--shadow-lg), var(--shadow-glow);
   border: 1px solid var(--border);
 }
 
 main {
+  min-height: 100vh;
   padding: 5% 0;
   position: relative;
   overflow: hidden;
@@ -68,7 +69,8 @@ form {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
+  padding: 0 1rem;
 }
 
 input {
@@ -99,7 +101,7 @@ input:focus {
 h2 {
   font-size: clamp(1.1rem, 2.5vh, 2rem);
   text-align: center;
-  margin-bottom: 2.5%;
+  margin-bottom: 1.25rem;
   font-family: 'Roboto Flex', sans-serif;
   color: var(--text-secondary);
 }
@@ -129,14 +131,14 @@ button:hover {
 }
 
 span {
-  font-size: clamp(1.8rem, 4.5vh, 3.5rem);
+  font-size: clamp(1.2rem, 3vh, 2rem);
 }
 
 p {
   text-align: center;
   font-size: clamp(0.9rem, 2vh, 1.5rem);
   font-family: 'Roboto Flex', sans-serif;
-  margin: 10% 0;
+  margin: 2rem 0;
   color: var(--text-secondary);
 }
 
@@ -150,16 +152,46 @@ h2 {
   z-index: 1;
 }
 
+/* ========== TABLET (768px und kleiner) ========== */
 @media (max-width: 768px) {
+  main {
+    padding: 1.5rem 1rem;
+  }
+
   .logout-btn {
-    right: 6%;
-    top: 0.85rem;
-    padding: 0.45rem 0.6rem;
+    position: absolute;
+    right: 5%;
+    top: 1.25rem;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.85rem;
   }
 
   section {
     width: 92%;
-    padding: 4%;
+    padding: 1.5rem 1.25rem;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  h1::after {
+    width: 70%;
+    left: 15%;
+  }
+
+  h2 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    margin: 1.5rem 0;
   }
 
   form {
@@ -168,117 +200,138 @@ h2 {
   }
 
   input {
-    width: 80%;
+    width: 100%;
+    min-width: unset;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+  }
+
+  span {
+    font-size: 1.25rem;
+  }
+}
+
+/* ========== MOBILE (480px und kleiner) ========== */
+@media (max-width: 480px) {
+  main {
+    padding: 1rem 0.5rem;
+  }
+
+  .logout-btn {
+    position: absolute;
+    right: 4%;
+    top: 0.75rem;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+  }
+
+  section {
+    width: calc(100% - 2rem);
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.6rem;
+    letter-spacing: 0.02em;
   }
 
   h1::after {
     width: 80%;
     left: 10%;
-  }
-}
-
-@media (max-width: 480px) {
-  section {
-    width: 96%;
-    padding: 5% 4%;
-    border-radius: var(--radius-lg);
+    height: 1.5px;
   }
 
-  input {
-    width: 90%;
+  h2 {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
   }
 
   p {
-    margin: 6% 0;
+    font-size: 0.85rem;
+    margin: 1rem 0;
+  }
+
+  form {
+    gap: 0.6rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.875rem;
+  }
+
+  input::placeholder {
+    font-size: 0.825rem;
+  }
+
+  button {
+    padding: 0.45rem 0.85rem;
+    margin-top: 0.75rem;
+  }
+
+  span {
+    font-size: 1.1rem;
   }
 }
 
-/* ── Stars ────────────────────────────────────────── */
+/* ========== EXTRA SMALL MOBILE (380px und kleiner) ========== */
+@media (max-width: 380px) {
+  main {
+    padding: 0.75rem 0.35rem;
+  }
 
-.stars {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
+  .logout-btn {
+    right: 3%;
+    top: 0.6rem;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.7rem;
+  }
 
-.star {
-  position: absolute;
-  bottom: -10px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(56, 189, 248, 0.5) 40%,
-    rgba(139, 92, 246, 0.2) 70%,
-    transparent 100%
-  );
-  box-shadow:
-    0 0 6px 1px rgba(56, 189, 248, 0.3),
-    0 0 14px 2px rgba(139, 92, 246, 0.15);
-  animation:
-    floatUp linear infinite,
-    twinkle ease-in-out infinite;
-}
+  section {
+    width: calc(100% - 1.5rem);
+    padding: 1rem 0.75rem;
+  }
 
-.star:nth-child(odd) {
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(139, 92, 246, 0.5) 40%,
-    rgba(56, 189, 248, 0.2) 70%,
-    transparent 100%
-  );
-  box-shadow:
-    0 0 6px 1px rgba(139, 92, 246, 0.3),
-    0 0 14px 2px rgba(56, 189, 248, 0.15);
-}
+  h1 {
+    font-size: 1.15rem;
+    margin-top: 1.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
 
-.star:nth-child(3n) {
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(244, 114, 182, 0.4) 40%,
-    rgba(56, 189, 248, 0.15) 70%,
-    transparent 100%
-  );
-  box-shadow:
-    0 0 6px 1px rgba(244, 114, 182, 0.25),
-    0 0 12px 2px rgba(56, 189, 248, 0.1);
-}
+  h2 {
+    font-size: 0.825rem;
+    margin-bottom: 0.6rem;
+  }
 
-@keyframes floatUp {
-  0% {
-    transform: translateY(0) translateX(0) scale(0.4);
-    opacity: 0;
+  p {
+    font-size: 0.8rem;
+    margin: 0.6rem 0;
   }
-  5% {
-    opacity: 0.6;
+
+  input {
+    padding: 0.5rem 0.55rem;
+    font-size: 0.825rem;
   }
-  15% {
-    opacity: 1;
+
+  button {
+    padding: 0.4rem 0.7rem;
+    margin-top: 0.6rem;
   }
-  30% {
-    transform: translateY(-30vh) translateX(15px) scale(0.9);
-  }
-  50% {
-    transform: translateY(-50vh) translateX(-10px) scale(1);
-  }
-  70% {
-    transform: translateY(-70vh) translateX(20px) scale(0.85);
-  }
-  88% {
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(-110vh) translateX(-5px) scale(0.3);
-    opacity: 0;
+
+  span {
+    font-size: 0.95rem;
   }
 }
 
-@keyframes twinkle {
-  0%, 100% { opacity: 0.7; }
-  25% { opacity: 1; }
-  50% { opacity: 0.5; }
-  75% { opacity: 0.9; }
-}

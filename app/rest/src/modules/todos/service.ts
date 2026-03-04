@@ -1,6 +1,6 @@
-import { prisma } from "../../../packages/database/prisma";
-import { hashPassword } from "../../auth/hashing.ts";
-import type { TodoModel, UserModel } from "./model";
+import { prisma } from "../../../../../packages/database/prisma";
+import { hashPassword } from "../../../../safety/hashing";
+import type { TodoModel } from "./model";
 
 export abstract class TodoService {
   static async getAllTodos(userId: string) {
@@ -59,22 +59,6 @@ export abstract class TodoService {
       where: {
         id: params.id,
         userId: userId,
-      },
-    });
-  }
-}
-
-export abstract class UserService {
-  static async createUser({
-    body,
-  }: {
-    body: (typeof UserModel.PostUserBody)["static"];
-  }) {
-    await prisma.user.create({
-      data: {
-        password: await hashPassword(body.password),
-        username: body.username,
-        email: body.email,
       },
     });
   }
