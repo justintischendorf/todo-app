@@ -1,94 +1,21 @@
 <main>
-  <div class="stars" aria-hidden="true">
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-  </div>
+  <app-stars />
   <h1>Todo-App</h1>
-  <button class="logout-btn" type="button" (click)="homepageService.logout()">
-    Logout
-  </button>
+  <button class="logout-btn" type="button" (click)="onLogout()">Logout</button>
   <section>
     <h2><b>Neues Todo hinzufügen:</b></h2>
     <form>
-      <input
-        #title
-        type="text"
-        style="margin-right: 0.5%"
-        placeholder="Titel"
-        (keydown.enter)="
-          homepageService.addTodo(title.value, description.value, title, description)
-        "
-      />
-      <input
-        #description
-        type="text"
-        style="margin-left: 0.5%"
-        placeholder="Beschreibung"
-        (keydown.enter)="
-          homepageService.addTodo(title.value, description.value, title, description)
-        "
-      />
+      <input #title type="text" placeholder="Titel" (keydown.enter)="onAddTodo(title, description)" />
+      <input #description type="text" placeholder="Beschreibung" (keydown.enter)="onAddTodo(title, description)" />
     </form>
-    <button type="button" (click)="homepageService.deleteTodos()">
+    <button type="button" (click)="todoService.deleteAllTodos()">
       <span class="material-symbols-outlined">delete</span>
     </button>
-    @if (homepageService.todos() && homepageService.todos().length === 0) {
+    @if (todoService.todos().length === 0) {
       <p>Keine Todos vorhanden.</p>
-    } @else if (homepageService.todos()) {
-      @for (todo of homepageService.todos(); track todo.id) {
-        <app-todo
-          [todo]="todo"
-          (todoDeleted)="homepageService.refreshTodos()"
-          (todoChanged)="homepageService.refreshTodos()"
-        ></app-todo>
+    } @else {
+      @for (todo of todoService.todos(); track todo.id) {
+        <app-todo [todo]="todo" (deleted)="onDeleteTodo($event)" (updated)="onUpdateTodo($event)" />
       }
     }
   </section>

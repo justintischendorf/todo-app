@@ -15,5 +15,33 @@ services:
       timeout: 5s
       retries: 5
 
+  rest:
+    image: oven/bun:1
+    working_dir: /app
+    volumes:
+      - .:/app
+      - rest_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      DATABASE_URL: "postgresql://postgres:mysecretpassword@postgres:5432/todo"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "bun install && bunx prisma generate --schema=packages/database/prisma/schema.prisma && bun run --watch app/rest/src/index.ts"
+
+  website:
+    image: node:22-alpine
+    working_dir: /app/app/website/todo-ang
+    volumes:
+      - .:/app
+      - website_modules:/app/app/website/todo-ang/node_modules
+    ports:
+      - "4200:4200"
+    command: sh -c "npm install && npx ng serve --host 0.0.0.0"
+
 volumes:
   postgres_data:
+  rest_modules:
+  website_modules:

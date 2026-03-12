@@ -1,65 +1,25 @@
 import { prisma } from "../../../../../packages/database/prisma";
-import { hashPassword } from "../../../../safety/hashing";
 import type { TodoModel } from "./model";
 
-export abstract class TodoService {
-  static async getAllTodos(userId: string) {
-    return await prisma.todo.findMany({
-      where: { userId },
-    });
-  }
+type TodoBody = (typeof TodoModel.PostTodoBody)["static"];
+type TodoParams = (typeof TodoModel.TodoParams)["static"];
 
-  static async addTodo({
-    body,
-    userId,
-  }: {
-    body: (typeof TodoModel.PostTodoBody)["static"];
-    userId: string;
-  }) {
-    await prisma.todo.create({
-      data: {
-        ...body,
-        userId: userId,
-      },
-    });
-  }
+export function getAllTodos(userId: string) {
+  return prisma.todo.findMany({ where: { userId } });
+}
 
-  static async updateTodoById({
-    body,
-    params,
-    userId,
-  }: {
-    body: (typeof TodoModel.PatchTodoBody)["static"];
-    params: (typeof TodoModel.PatchTodoParams)["static"];
-    userId: string;
-  }) {
-    await prisma.todo.update({
-      where: {
-        id: params.id,
-        userId: userId,
-      },
-      data: body,
-    });
-  }
+export function addTodo(body: TodoBody, userId: string) {
+  return prisma.todo.create({ data: { ...body, userId } });
+}
 
-  static async deleteAllTodos(userId: string) {
-    await prisma.todo.deleteMany({
-      where: { userId },
-    });
-  }
+export function updateTodoById(body: TodoBody, params: TodoParams, userId: string) {
+  return prisma.todo.update({ where: { id: params.id, userId }, data: body });
+}
 
-  static async deleteTodoById({
-    params,
-    userId,
-  }: {
-    params: (typeof TodoModel.DeleteTodoParams)["static"];
-    userId: string;
-  }) {
-    await prisma.todo.delete({
-      where: {
-        id: params.id,
-        userId: userId,
-      },
-    });
-  }
+export function deleteAllTodos(userId: string) {
+  return prisma.todo.deleteMany({ where: { userId } });
+}
+
+export function deleteTodoById(params: TodoParams, userId: string) {
+  return prisma.todo.delete({ where: { id: params.id, userId } });
 }

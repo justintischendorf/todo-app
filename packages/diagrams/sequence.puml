@@ -1,94 +1,125 @@
 @startuml
 
 actor User
-participant "Angular Frontend" as FE
-participant "REST API" as API
-participant "Redis Cache" as Cache
-participant "Redis Queue" as Queue
-participant "Worker (plainTS)" as Worker
+participant "Angular\nFrontend" as FE
+participant "Auth\nInterceptor" as INT
+participant "Elysia\nREST API" as API
+participant "Auth Guard" as GUARD
 participant "Prisma ORM" as ORM
 database "PostgreSQL" as DB
 
-== GET /api/todos ==
-User -> FE: Open page / trigger action
-FE -> API: GET /api/todos
-API -> ORM: findMany(todos)
-ORM -> DB: SELECT * FROM todos
-DB --> ORM: todos
-ORM --> API: todos
-API --> FE: todos
-FE --> User: Render todo list
+== Register ==
+User -> FE: Formular ausfüllen
+FE -> INT: POST /api/auth/register
+INT -> API: (kein Token nötig)
+API -> ORM: user.create(hash(password))
+ORM -> DB: INSERT INTO "User"
+DB --> ORM: user
+ORM --> API: ok
+API --> FE: 201 Created
+FE --> User: "Registrierung erfolgreich"
 
-== GET /api/todos/:id ==
-User -> FE: Select todo
-FE -> API: GET /api/todos/:id
-API -> Cache: GET todo:id
+== Login ==
+User -> FE: Credentials eingeben
+FE -> INT: POST /api/auth/login
+INT -> API: { username, email, password }
+API -> ORM: user.findUnique(email)
+ORM -> DB: SELECT FROM "User"
+DB --> ORM: user
+ORM --> API: user
+API -> API: verifyPassword(hash, password)
+API -> API: createAccessToken (15min)
+API -> API: createRefreshToken (7d)
+API --> FE: { accessToken, userId }\n+ Set-Cookie: refresh_token (HttpOnly)
+FE -> FE: Token im Memory speichern
+FE --> User: Weiterleitung zu /home
 
-alt Todo found in cache
-    Cache --> API: todo
-    API --> FE: todo
-    FE --> User: Display todo
-else Todo not in cache
-    Cache --> API: null
-    API -> ORM: findUnique(todo:id)
-    ORM -> DB: SELECT todo WHERE id
-    DB --> ORM: todo
-    ORM --> API: todo
-    API -> Cache: SET todo:id
-    API --> FE: todo
-    FE --> User: Display todo
-end
+== GET /api/todos (mit Auth) ==
+User -> FE: Homepage öffnen
+FE -> INT: GET /api/todos
+INT -> INT: Bearer Token anhängen
+INT -> API: GET /api/todos\nAuthorization: Bearer <token>
+API -> GUARD: Token verifizieren
+GUARD -> GUARD: verifyAccessToken → userId
+GUARD --> API: { userId }
+API -> ORM: todo.findMany({ userId })
+ORM -> DB: SELECT FROM "Todo" WHERE userId
+DB --> ORM: todos[]
+ORM --> API: todos[]
+API --> FE: todos[]
+FE --> User: Todo-Liste rendern
 
 == POST /api/todos ==
-User -> FE: Create new todo
-FE -> API: POST /api/todos (todo)
-API -> Queue: PUSH todo
-
-loop Worker processes queue
-    Worker -> Queue: POP todo
-    Worker -> ORM: create(todo)
-    ORM -> DB: INSERT todo
-    DB --> ORM: success
-    ORM --> Worker: todo
-    Worker -> Cache: SET todo:id
-end
-
-API --> FE: 202 Accepted
-FE --> User: Todo will appear after refresh
+User -> FE: Neues Todo erstellen
+FE -> INT: POST /api/todos { title, description }
+INT -> API: + Bearer Token
+API -> GUARD: Token verifizieren
+GUARD --> API: { userId }
+API -> ORM: todo.create({ ...body, userId })
+ORM -> DB: INSERT INTO "Todo"
+DB --> ORM: todo
+ORM --> API: ok
+API --> FE: 201 Created
+FE -> FE: refreshTodos()
 
 == PATCH /api/todos/:id ==
-User -> FE: Edit todo
-FE -> API: PATCH /api/todos/:id (updated data)
-API -> Cache: UPDATE todo:id
-API -> ORM: update(todo:id)
-ORM -> DB: UPDATE todo
-DB --> ORM: success
-ORM --> API: updated todo
-API --> FE: updated todo
-FE --> User: Render updated todo
-
-== DELETE /api/todos ==
-User -> FE: Delete all todos
-FE -> API: DELETE /api/todos
-API -> Cache: DELETE all todos
-API -> ORM: deleteMany(todos)
-ORM -> DB: DELETE FROM todos
-DB --> ORM: success
-ORM --> API: success
-API --> FE: success
-FE -> FE: Reload page
-FE --> User: Render empty todo list
+User -> FE: Todo bearbeiten
+FE -> INT: PATCH /api/todos/:id { title, description }
+INT -> API: + Bearer Token
+API -> GUARD: Token verifizieren
+GUARD --> API: { userId }
+API -> ORM: todo.update({ id, userId })
+ORM -> DB: UPDATE "Todo" WHERE id AND userId
+DB --> ORM: updated
+ORM --> API: ok
+API --> FE: ok
+FE -> FE: refreshTodos()
 
 == DELETE /api/todos/:id ==
-User -> FE: Delete single todo
-FE -> API: DELETE /api/todos/:id
-API -> Cache: DELETE todo:id
-API -> ORM: delete(todo:id)
-ORM -> DB: DELETE todo WHERE id
-DB --> ORM: success
-ORM --> API: success
-API --> FE: success
-FE -> FE: Reload page
-FE --> User: Render remaining todos
+User -> FE: Todo löschen
+FE -> INT: DELETE /api/todos/:id
+INT -> API: + Bearer Token
+API -> GUARD: Token verifizieren
+GUARD --> API: { userId }
+API -> ORM: todo.delete({ id, userId })
+ORM -> DB: DELETE FROM "Todo" WHERE id AND userId
+DB --> ORM: ok
+API --> FE: ok
+FE -> FE: refreshTodos()
+
+== DELETE /api/todos ==
+User -> FE: Alle Todos löschen
+FE -> INT: DELETE /api/todos
+INT -> API: + Bearer Token
+API -> GUARD: Token verifizieren
+GUARD --> API: { userId }
+API -> ORM: todo.deleteMany({ userId })
+ORM -> DB: DELETE FROM "Todo" WHERE userId
+DB --> ORM: ok
+API --> FE: ok
+FE -> FE: refreshTodos()
+
+== Token Refresh (automatisch bei 401) ==
+FE -> INT: beliebiger API-Request
+INT -> API: + Bearer Token (abgelaufen)
+API -> GUARD: Token verifizieren
+GUARD --> API: 401 Unauthorized
+API --> INT: 401
+INT -> API: POST /api/auth/refresh\n+ Cookie: refresh_token
+API -> API: verifyRefreshToken
+API -> API: neues Token-Paar erstellen
+API --> INT: { accessToken }\n+ Set-Cookie: refresh_token (rotiert)
+INT -> INT: Token im Memory aktualisieren
+INT -> API: Original-Request wiederholen\n+ neuer Bearer Token
+API --> FE: ursprüngliche Antwort
+
+== Logout ==
+User -> FE: Logout klicken
+FE -> INT: POST /api/auth/logout
+INT -> API: + Cookie
+API -> API: clearRefreshCookie
+API --> FE: Set-Cookie: refresh_token (Max-Age=0)
+FE -> FE: Token aus Memory löschen
+FE --> User: Weiterleitung zu /login
 
 @enduml

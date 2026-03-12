@@ -1,56 +1,5 @@
 <main>
-  <div class="stars" aria-hidden="true">
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-    <div class="star"></div>
-  </div>
+  <app-stars />
   <form>
     <h1>Login</h1>
     <label for="username">Username</label>
@@ -59,9 +8,9 @@
     <input #email type="email" name="email" placeholder="E-Mail" required />
     <label for="password">Password</label>
     <input #password type="password" name="password" placeholder="Passwort" required />
-    <button type="button" (click)="loginService.login(username.value, email.value, password.value, username, email, password)">
+    <button type="button" (click)="onLogin(username.value, email.value, password.value, username, email, password)">
       Login
     </button>
-    <a href="/register">Noch keinen Account?</a>
+    <a routerLink="/register">Noch keinen Account?</a>
   </form>
 </main>

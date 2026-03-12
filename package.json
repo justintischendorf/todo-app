@@ -7,14 +7,6 @@
     "@types/bun": "latest",
     "@types/jsonwebtoken": "^9.0.10"
   },
-  "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "target": "ES2023",
-    "strict": true,
-    "esModuleInterop": true,
-    "ignoreDeprecations": "6.0"
-  },
   "peerDependencies": {
     "typescript": "^5"
   },
@@ -30,16 +22,8 @@
     "@node-rs/argon2": "^2.0.2",
     "@prisma/adapter-pg": "^7.4.0",
     "@prisma/client": "^7.4.2",
-    "argon2": "^0.44.0",
-    "cloudevents": "^10.0.0",
     "elysia": "^1.4.25",
-    "ioredis": "^5.9.3",
     "jsonwebtoken": "^9.0.0",
-    "jwt": "^0.2.0",
-    "plantuml": "^0.0.2",
-    "prisma": "^7.4.0",
-    "uuid": "^13.0.0",
-    "uuidv4": "^6.2.13",
-    "zod": "^4.3.6"
+    "prisma": "^7.4.0"
   }
 }

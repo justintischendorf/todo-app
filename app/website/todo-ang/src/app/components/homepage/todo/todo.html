@@ -1,25 +1,27 @@
 <div>
-  <button id="edit-button" (click)="showInputField()">
+  <button id="edit-button" (click)="toggleEdit()">
     <span class="material-symbols-outlined"> edit </span>
   </button>
-  <button id="close-button" (click)="deleteTodo(todo.id)">
+  <button id="close-button" (click)="onDelete()">
     <span class="material-symbols-outlined"> close </span>
   </button>
   <h1 class="title">{{ todo.title }}</h1>
-  <input
-    #titleInput
-    type="text"
-    class="title-input"
-    [value]="todo.title"
-    (keydown.enter)="saveNewTodo(titleInput.value, descriptionInput.value)"
-  />
-  <input
-    #descriptionInput
-    type="text"
-    class="description-input"
-    [value]="todo.description"
-    (keydown.enter)="saveNewTodo(titleInput.value, descriptionInput.value)"
-  />
+  @if (isEditing) {
+    <input
+      #titleInput
+      type="text"
+      class="title-input"
+      [value]="todo.title"
+      (keydown.enter)="onSave(titleInput.value, descriptionInput.value)"
+    />
+    <input
+      #descriptionInput
+      type="text"
+      class="description-input"
+      [value]="todo.description"
+      (keydown.enter)="onSave(titleInput.value, descriptionInput.value)"
+    />
+  }
   <p class="timestamp">
     erstellt am {{ todo.createdAt | date: 'longDate' : '' : 'de' }} um
     {{ todo.createdAt | date: 'shortTime' : '' : 'de' }} Uhr

@@ -1,105 +1,50 @@
 import { Elysia } from "elysia";
-import {
-  PrismaClientInitializationError,
-  PrismaClientKnownRequestError,
-  PrismaClientRustPanicError,
-  PrismaClientUnknownRequestError,
-} from "@prisma/client/runtime/wasm-compiler-edge";
-import { prisma } from "../../../../../packages/database/prisma";
-import { verifyPassword } from "../../../../safety/hashing";
-import { createJWT } from "../../../../safety/jwt";
 import { UserModel } from "./model";
-import { UserService } from "./service";
+import { createUser, login, refreshToken } from "./service";
+import {
+  setRefreshCookie,
+  clearRefreshCookie,
+  parseCookies,
+} from "../../lib/cookies";
 
 export const authModule = new Elysia()
-
-  // ------------------------- AUTH ------------------ -------
 
   .post(
     "/auth/register",
     async ({ set, body }) => {
-      try {
-        if (!body.username || !body.email || !body.password) {
-          set.status = 400;
-          return { error: "Username, email, and password are required." };
-        }
-        await UserService.createUser({ body });
-        set.status = 200;
-      } catch (e) {
-        if (e instanceof PrismaClientInitializationError) {
-          set.status = 503;
-          return { error: "Unable to establish database connection." };
-        }
-        if (
-          e instanceof PrismaClientUnknownRequestError ||
-          e instanceof PrismaClientRustPanicError
-        ) {
-          set.status = 500;
-          return { error: "The server encountered an unexpected exception." };
-        }
-        if (e instanceof PrismaClientKnownRequestError) {
-          set.status = 500;
-          return { error: e.code };
-        }
-        set.status = 500;
-        return { error: "The server encountered an unexpected exception." };
-      }
+      await createUser(body);
+      set.status = 201;
     },
-    {
-      body: UserModel.PostUserBody,
-    },
+    { body: UserModel.PostUserBody },
   )
+
+  .post("/auth/refresh", ({ set, headers }) => {
+    const cookies = parseCookies(headers["cookie"]);
+    const token = cookies["refresh_token"];
+    if (!token) {
+      set.status = 401;
+      return { error: "No refresh token provided." };
+    }
+    const result = refreshToken(token);
+    setRefreshCookie(set, result.refreshToken);
+    return { accessToken: result.accessToken };
+  })
+
+  .post("/auth/logout", ({ set }) => {
+    clearRefreshCookie(set);
+    return { message: "Logged out." };
+  })
 
   .post(
     "/auth/login",
     async ({ set, body }) => {
-      try {
-        if (!body.username || !body.email || !body.password) {
-          set.status = 400;
-          return { error: "Username, email, and password are required." };
-        }
-        const user = await prisma.user.findUnique({
-          where: {
-            email: body.email,
-          },
-        });
-        if (!user) {
-          set.status = 401;
-          return { error: "Nutzer ist nicht vorhanden." };
-        }
-        const isPasswordValid = await verifyPassword(
-          user.password,
-          body.password,
-        );
-        if (isPasswordValid) {
-          const token = await createJWT(user.id);
-          set.status = 200;
-          return { token: token, userId: user.id };
-        } else {
-          set.status = 401;
-          return { error: "Passwort oder Nutzername ist falsch." };
-        }
-      } catch (e) {
-        if (e instanceof PrismaClientInitializationError) {
-          set.status = 503;
-          return { error: "Unable to establish database connection." };
-        }
-        if (
-          e instanceof PrismaClientUnknownRequestError ||
-          e instanceof PrismaClientRustPanicError
-        ) {
-          set.status = 500;
-          return { error: "The server encountered an unexpected exception." };
-        }
-        if (e instanceof PrismaClientKnownRequestError) {
-          set.status = 500;
-          return { error: e.code };
-        }
-        set.status = 500;
-        return { error: "The server encountered an unexpected exception." };
+      const result = await login(body);
+      if (!result) {
+        set.status = 401;
+        return { error: "E-Mail oder Passwort ist falsch." };
       }
+      setRefreshCookie(set, result.refreshToken);
+      return { accessToken: result.accessToken, userId: result.userId };
     },
-    {
-      body: UserModel.PostUserBody,
-    },
+    { body: UserModel.PostUserBody },
   );
