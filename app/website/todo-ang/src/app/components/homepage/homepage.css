@@ -1,0 +1,337 @@
+@import '@fontsource/limelight';
+@import '@fontsource-variable/roboto-flex';
+
+h1 {
+  font-size: clamp(2.5rem, 8vh, 6rem);
+  text-align: center;
+  font-family: 'Limelight', sans-serif;
+  position: relative;
+  padding-bottom: 2%;
+  margin-bottom: 5%;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  width: 60%;
+  height: 2px;
+  bottom: 0;
+  left: 20%;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+section {
+  background: var(--bg-secondary);
+  width: min(75%, 1000px);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  margin: auto;
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  border: 1px solid var(--border);
+}
+
+main {
+  min-height: 100vh;
+  padding: 5% 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.logout-btn {
+  font-family: 'Roboto Flex', sans-serif;
+  position: absolute;
+  top: 1.25rem;
+  right: calc((100% - min(80%, 1200px)) / 2 + 1rem);
+  z-index: 2;
+  padding: clamp(0.45rem, 0.9%, 0.7rem) clamp(0.6rem, 1.2%, 1rem);
+  font-size: 0.95rem;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.logout-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--accent);
+  border-color: var(--accent-hover);
+  box-shadow: 0 0 20px var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+input {
+  width: 25%;
+  min-width: 150px;
+  padding: clamp(0.5rem, 0.75%, 0.85rem);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: clamp(0.9rem, 2vh, 1.5rem);
+  font-family: 'Roboto Flex Variable', sans-serif;
+  color: var(--text-primary);
+  transition:
+    border-color 200ms,
+    box-shadow 200ms;
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+h2 {
+  font-size: clamp(1.1rem, 2.5vh, 2rem);
+  text-align: center;
+  margin-bottom: 1.25rem;
+  font-family: 'Roboto Flex', sans-serif;
+  color: var(--text-secondary);
+}
+
+button {
+  padding: clamp(0.5rem, 1%, 1rem) clamp(0.7rem, 1.5%, 1.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--danger);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  margin: 0 auto;
+  margin-top: 4%;
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+button:hover {
+  color: var(--text-primary);
+  background-color: var(--danger);
+  border-color: var(--danger);
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.3);
+  transform: translateY(-2px);
+}
+
+span {
+  font-size: clamp(1.2rem, 3vh, 2rem);
+}
+
+p {
+  text-align: center;
+  font-size: clamp(0.9rem, 2vh, 1.5rem);
+  font-family: 'Roboto Flex', sans-serif;
+  margin: 2rem 0;
+  color: var(--text-secondary);
+}
+
+h1,
+section,
+form,
+button,
+p,
+h2 {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== TABLET (768px und kleiner) ========== */
+@media (max-width: 768px) {
+  main {
+    padding: 1.5rem 1rem;
+  }
+
+  .logout-btn {
+    position: absolute;
+    right: 5%;
+    top: 1.25rem;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  section {
+    width: 92%;
+    padding: 1.5rem 1.25rem;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  h1::after {
+    width: 70%;
+    left: 15%;
+  }
+
+  h2 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    margin: 1.5rem 0;
+  }
+
+  form {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  input {
+    width: 100%;
+    min-width: unset;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+  }
+
+  span {
+    font-size: 1.25rem;
+  }
+}
+
+/* ========== MOBILE (480px und kleiner) ========== */
+@media (max-width: 480px) {
+  main {
+    padding: 1rem 0.5rem;
+  }
+
+  .logout-btn {
+    position: absolute;
+    right: 4%;
+    top: 0.75rem;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+  }
+
+  section {
+    width: calc(100% - 2rem);
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.6rem;
+    letter-spacing: 0.02em;
+  }
+
+  h1::after {
+    width: 80%;
+    left: 10%;
+    height: 1.5px;
+  }
+
+  h2 {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    font-size: 0.85rem;
+    margin: 1rem 0;
+  }
+
+  form {
+    gap: 0.6rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.875rem;
+  }
+
+  input::placeholder {
+    font-size: 0.825rem;
+  }
+
+  button {
+    padding: 0.45rem 0.85rem;
+    margin-top: 0.75rem;
+  }
+
+  span {
+    font-size: 1.1rem;
+  }
+}
+
+/* ========== EXTRA SMALL MOBILE (380px und kleiner) ========== */
+@media (max-width: 380px) {
+  main {
+    padding: 0.75rem 0.35rem;
+  }
+
+  .logout-btn {
+    right: 3%;
+    top: 0.6rem;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.7rem;
+  }
+
+  section {
+    width: calc(100% - 1.5rem);
+    padding: 1rem 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.15rem;
+    margin-top: 1.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-size: 0.825rem;
+    margin-bottom: 0.6rem;
+  }
+
+  p {
+    font-size: 0.8rem;
+    margin: 0.6rem 0;
+  }
+
+  input {
+    padding: 0.5rem 0.55rem;
+    font-size: 0.825rem;
+  }
+
+  button {
+    padding: 0.4rem 0.7rem;
+    margin-top: 0.6rem;
+  }
+
+  span {
+    font-size: 0.95rem;
+  }
+}
+

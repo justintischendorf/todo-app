@@ -1,0 +1,16 @@
+<main>
+  <app-stars />
+  <form>
+    <h1>Login</h1>
+    <label for="username">Username</label>
+    <input #username type="text" name="username" placeholder="Nutzername" required />
+    <label for="email">E-Mail</label>
+    <input #email type="email" name="email" placeholder="E-Mail" required />
+    <label for="password">Password</label>
+    <input #password type="password" name="password" placeholder="Passwort" required />
+    <button type="button" (click)="onLogin(username.value, email.value, password.value, username, email, password)">
+      Login
+    </button>
+    <a routerLink="/register">Noch keinen Account?</a>
+  </form>
+</main>

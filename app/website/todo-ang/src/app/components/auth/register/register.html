@@ -1,0 +1,39 @@
+<main>
+  <app-stars />
+  <form>
+    <h1>Registrierung</h1>
+    <label for="username">Username</label>
+    <input #username type="text" name="username" placeholder="Nutzername" required />
+    <label for="email">E-Mail</label>
+    <input #email type="email" name="email" placeholder="E-Mail" required />
+    <label for="password">Password</label>
+    <input #password type="password" name="password" placeholder="Passwort" required />
+    <label for="confirmPassword">Password bestätigen</label>
+    <input
+      #confirmPassword
+      type="password"
+      id="confirmPassword"
+      name="confirmPassword"
+      placeholder="Passwort bestätigen"
+      required
+    />
+    <button
+      type="button"
+      (click)="
+        onRegister(
+          username.value,
+          email.value,
+          password.value,
+          confirmPassword.value,
+          username,
+          email,
+          password,
+          confirmPassword
+        )
+      "
+    >
+      Registrieren
+    </button>
+    <a routerLink="/login">Zurück zum Login</a>
+  </form>
+</main>
